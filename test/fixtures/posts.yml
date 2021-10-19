@@ -1,13 +1,7 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  author: MyString
-  content: MyText
-  points: 1
-  numcomments: 1
+  title: MyString
 
 two:
-  author: MyString
-  content: MyText
-  points: 1
-  numcomments: 1
+  title: MyString
