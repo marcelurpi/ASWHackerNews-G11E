@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20211019162801) do
+ActiveRecord::Schema.define(version: 20211019190212) do
 
   create_table "posts", force: :cascade do |t|
     t.string   "author"
@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(version: 20211019162801) do
     t.integer  "numcomments"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+    t.string   "title"
   end
 
 end
