@@ -13,10 +13,10 @@
 ActiveRecord::Schema.define(version: 20211019190212) do
 
   create_table "posts", force: :cascade do |t|
-    t.string   "author"
+    t.string   "author", default: "hardcodedUser (no login implemented)"
     t.text     "content"
-    t.integer  "points"
-    t.integer  "numcomments"
+    t.integer  "points", default: 0
+    t.integer  "numcomments", default: 0
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
     t.string   "title"

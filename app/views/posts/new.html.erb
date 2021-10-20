@@ -2,11 +2,11 @@
   <head>
     <meta name="referrer" content="origin">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <link rel="stylesheet" type="text/css" href="posts.css">
     <link rel="shortcut icon" href="favicon.ico">
     <title>Submit | Hacker News</title>
-    <%= csrf_meta_tags %>
-    <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+    
   </head>
   <body>
     <center>
@@ -24,7 +24,38 @@
         <tr id="pagespace"Submit style="height:10px"></tr>
         <tr>
           <td>
-            <%= render 'form', post: @post %>
+            <form method="post" action="/posts">
+              <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+              <%= hidden_field_tag :created_at, DateTime.now() %>
+              <%= hidden_field_tag :updated_at, DateTime.now() %>
+              <table border="0">
+                <tr>
+                  <td>title</td>
+                  <td><input type="text" name="title" value="" size="50" autofocus="t" oninput="tlen(this)" onfocus="tlen(this)"><span style="margin-left:10px"></span></td>
+                </tr>
+                <tr>
+                  <td>text</td>
+                  <td><textarea name="content" rows="4" cols="49"></textarea></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td><input type="submit" value="submit"></td>
+                </tr>
+                <tr style="height:20px"></tr>
+                <tr>
+                  <td></td>
+                  <td>Leave url blank to submit a question for discussion. If there
+                    is no url, the text (if any) will appear at the top of the
+                    thread.<br><br>
+                    You can also submit via bookmarklet</a>.
+                  </td>
+                </tr>
+              </table>
+            </form>
           </td>
         </tr>
       </table>
