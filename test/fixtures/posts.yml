@@ -2,6 +2,16 @@
 
 one:
   title: MyString
+  url: MyString
+  content: MyString
+  author: MyString
+  numcomments: 
+  points: 
 
 two:
   title: MyString
+  url: MyString
+  content: MyString
+  author: MyString
+  numcomments: 
+  points: 
