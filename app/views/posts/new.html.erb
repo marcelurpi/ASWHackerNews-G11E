@@ -26,6 +26,7 @@
               <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
               <%= hidden_field_tag :created_at, DateTime.now() %>
               <%= hidden_field_tag :updated_at, DateTime.now() %>
+              <%= hidden_field_tag :author, "TATI-hardcoded" %>
               <table border="0">
                 <tr>
                   <td>title</td>
