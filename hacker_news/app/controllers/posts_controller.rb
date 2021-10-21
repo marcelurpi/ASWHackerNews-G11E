@@ -3,7 +3,11 @@ class PostsController < ApplicationController
 
   # GET /posts or /posts.json
   def index
-    @posts = Post.all
+    @posts = Post.all.sort { |a, b| -a.points <=> -b.points }
+  end
+  
+  def newest
+    @posts = Post.all.sort { |a, b| -a.created_at.to_i <=> -b.created_at.to_i }
   end
 
   # GET /posts/1 or /posts/1.json
