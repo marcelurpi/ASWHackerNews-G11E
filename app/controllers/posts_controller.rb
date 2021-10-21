@@ -3,7 +3,11 @@ class PostsController < ApplicationController
 
   # GET /posts or /posts.json
   def index
-    @posts = Post.all
+    @posts = Post.all.sort { |a, b| -a.points <=> -b.points }
+  end
+  
+  def newest
+    @posts = Post.all.sort { |a, b| -a.created_at.to_i <=> -b.created_at.to_i }
   end
 
   # GET /posts/1 or /posts/1.json
@@ -25,8 +29,8 @@ class PostsController < ApplicationController
 
     respond_to do |format|
       if @post.save
-        format.html { redirect_to @post, notice: "Post was successfully created." }
-        format.json { render :show, status: :created, location: @post }
+        format.html { redirect_to posts_url, notice: "Post was successfully created." }
+        format.json { head :no_content }
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @post.errors, status: :unprocessable_entity }
@@ -64,6 +68,6 @@ class PostsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def post_params
-      params.require(:post).permit(:author, :content, :points, :numcomments)
+      params.permit(:created_at, :updated_at,  :title, :content, :author)
     end
 end
