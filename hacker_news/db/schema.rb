@@ -10,16 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20211020090721) do
+=======
+ActiveRecord::Schema.define(version: 20211020164657) do
+>>>>>>> new_page
 
   create_table "posts", force: :cascade do |t|
-    t.string   "author"
-    t.integer  "points"
-    t.integer  "numcomments"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
     t.string   "title"
     t.string   "url"
+    t.string   "content"
+    t.string   "author"
+    t.integer  "numcomments", default: 0
+    t.integer  "points",      default: 0
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
   end
 
 end
