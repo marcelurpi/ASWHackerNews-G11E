@@ -22,6 +22,7 @@ class PostsController < ApplicationController
   # GET /posts/1/edit
   def edit
   end
+  
 
   # POST /posts or /posts.json
   def create
@@ -29,7 +30,7 @@ class PostsController < ApplicationController
 
     respond_to do |format|
       if @post.save
-        format.html { redirect_to posts_url, notice: "Post was successfully created." }
+        format.html { redirect_to "/posts/newest", notice: "Post was successfully created." }
         format.json { head :no_content }
       else
         format.html { render :new, status: :unprocessable_entity }

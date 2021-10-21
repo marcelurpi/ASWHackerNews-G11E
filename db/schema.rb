@@ -17,10 +17,10 @@ ActiveRecord::Schema.define(version: 20211020164657) do
     t.string   "url"
     t.string   "content"
     t.string   "author"
-    t.integer  "points"
-    t.integer  "numcomments"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.integer  "numcomments", default: 0
+    t.integer  "points",      default: 0
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
   end
 
 end
