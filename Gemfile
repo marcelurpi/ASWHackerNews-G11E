@@ -28,6 +28,8 @@ gem 'jbuilder', '~> 2.5'
 
 gem 'bootsnap'
 
+gem 'google_sign_in'
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
