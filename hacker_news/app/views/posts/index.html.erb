@@ -15,7 +15,11 @@
                 </td>
                 <td style="text-align:right;padding-right:4px;">
                   <span class="pagetop">
-                    <a id="me" href="">TATI-hardcoded</a> (1) | <a id="logout" href="">logout</a>
+                    <% if cookies.signed[:user_id].nil? %>
+                      <a id="login" href="<%= login_path %>">signup/login</a>
+                    <% else %>
+                      <a id="me" href=""><%= User.find(cookies.signed[:user_id]).name %></a> (1) | <a id="logout" href="<%= delete_login_path %>">logout</a>
+                    <% end %>
                   </span>
                 </td>
               </tr>
