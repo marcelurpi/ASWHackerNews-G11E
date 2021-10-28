@@ -35,12 +35,13 @@
                   </td>
                   <td valign="top" class="votelinks">
                     <center>
-                      <a id="up_28940860" onclick="" href="">
-                        <div class="votearrow" title="upvote"></div>
+                      <!--<a id="up_28940860" onclick="" href="">-->
+                        <div class="votearrow" title="upvote"><%= link_to '_', like_post_path(post), method: :put %></div>
                       </a>
                     </center>
                   </td>
                   <td class="title">
+                    <%= link_to "#{post.title}", post %>
                     <a href="https://<%= post.content.gsub("https://", "").gsub("http://", "") %>" class="titlelink"><%= post.title %></a>
                     <span class="sitebit comhead"> (<a href="https://<%= post.content.gsub("https://", "").gsub("http://", "").split('/').first %>"><span class="sitestr"><%= post.content.gsub("https://", "").gsub("http://", "").split('/').first %></span></a>)</span>
                   </td>
@@ -51,7 +52,7 @@
                     <span class="score" id="score_28940860"><%= post.points %> points</span> 
                     by <a href="" class="hnuser"><%= post.author %></a> 
                     <span class="age" title="2021-10-21T05:57:57"><a href=""><%= time_ago_in_words(post.created_at)  %> ago</a></span> 
-                    <span id="unv_28940860"></span> | <a href="" onclick="">hide</a> | <a href=""><%= post.numcomments %> comments</a>
+                    <span id="unv_28940860"></span> | <a href="" onclick="">hide</a> | <%= link_to 'unlike', unlike_post_path(post), method: :put %> | <a href=""><%= post.numcomments %> comments</a>
                   </td>
                 </tr>
                 <tr class="spacer" style="height:5px"></tr>
