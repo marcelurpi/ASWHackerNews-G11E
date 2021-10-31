@@ -9,6 +9,10 @@ class PostsController < ApplicationController
   def newest
     @posts = Post.all.sort { |a, b| -a.created_at.to_i <=> -b.created_at.to_i }
   end
+  
+  def ask
+    @postsask = Post.where(url: "")
+  end 
 
   # GET /posts/1 or /posts/1.json
   def show
@@ -69,6 +73,6 @@ class PostsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def post_params
-      params.permit(:created_at, :updated_at,  :title, :content, :author)
+      params.permit(:created_at, :updated_at,  :title, :content, :author, :url)
     end
 end
