@@ -18,6 +18,11 @@ class PostsController < ApplicationController
   def new
     @post = Post.new
   end
+  
+  # PUT /posts/1/comment
+  def comment
+      @comment = @post.comments.create(content: params[:content], id_post: @post.id_post)
+  end
 
   # GET /posts/1/edit
   def edit
@@ -28,6 +33,10 @@ class PostsController < ApplicationController
     @post = Post.new(post_params)
     
     respond_to do |format|
+      if @post.save
+        format.html { redirect_to "/posts/newest", notice: "Post was successfully created." }
+        format.json { head :no_content }
+=begin
       if @post.title != "" and @post.save         #contrubions tipus url o normal (titol amb url OR content)
         if (@post.url == "" and @post.content != "") or (@post.content == "" and @post.url != "")
           format.html { redirect_to "/posts/newest", notice: "Post was successfully created." }
@@ -35,13 +44,14 @@ class PostsController < ApplicationController
         else
           format.html { render :new, status: :unprocessable_entity }
           format.json { render json: @post.errors, status: :unprocessable_entity }
-        end
+
       elsif @post.title == "" and @post.save and @post.url == "" and @post.content == ""          #tipus ask
         #falta implementar :
         # Publicació de noves Contribucions de tipus "ask". Fixeu-vos que si s'omplen alhora els camps "url" i "text", 
         #si l"url" és correcte i no existeix, es crea una nova Contribució per a aquell "url" i un nou comentari 
         #associat a aquesta Contribució amb el contingut del camp "text". L'autor del comentari és, òbviament, el mateix que 
         #ha creat la Contribució
+=end
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @post.errors, status: :unprocessable_entity }
