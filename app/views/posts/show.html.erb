@@ -18,7 +18,7 @@
                   </td>
                   <td style="text-align:right;padding-right:4px;">
                     <span class="pagetop">
-                      <!-- <a href="CANVIAR">login</a> <!-- link a login, NOT YET -->
+                      <!-- canviar -->
                       <a id="me" href="">TATI-hardcoded</a> (1) | <a id="logout" href="">logout</a>
                     </span>
                   </td>
@@ -59,11 +59,9 @@
                   <tr>
                     <td colspan="2"></td>
                     <td>
-                      <form method="post" action="comment">
-                        <input type="hidden" name="parent" value="CANVIAR"> <!-- id del pare -->
-                        <input type="hidden" name="goto" value="CANVIAR"> <!-- la resta nidea -->
-                        <input type="hidden" name="hmac" value="CANVIAR">
-                        <textarea name="text" rows="6" cols="60"></textarea>
+                      <form method="put" action=<%= comment_post_path(@post)%>>
+                         <!-- id del pare -->
+                        <textarea name="content" rows="6" cols="60"></textarea>
                         <br><br>
                         <input type="submit" value="add comment">
                       </form>
@@ -76,6 +74,7 @@
                   <td>
                     <table border="0">
                       <tbody>
+                        <% @comments.each do |comment| %>
                         <tr>
                           <td class="ind" indent="0">
                             <img src="s.gif" height="1" width="0">
@@ -87,13 +86,14 @@
                               </a>
                               </center>
                           </td>
+                          
                           <td class="default">
                             <td class="default">
                               <div style="margin-top:2px; margin-bottom:-10px;">
                                 <span class="comhead">
-                                  <a href="CANVIAR" class="hnuser"><!--nom usuari --></a> <!-- link a usuari-->
+                                  <a href="CANVIAR" class="hnuser"><%= comment.author %></a> <!-- link a usuari-->
                                   <span class="age" title="2021-11-08T17:15:34">
-                                    <a href="CANVIAR"> <!-- created_at--> </a>
+                                    <a href="CANVIAR"><%= time_ago_in_words(comment.created_at)  %> ago</a>
                                   </span> 
                                   <span id="unv_29151509"></span>
                                   <span class="navs"> <!-- PORTA AL SEGUENT COMENTARI, POTSER NO CAL -->
@@ -103,22 +103,25 @@
                                 </span>
                               </div>
                               <br>
-                              <!-- LOOP DE COMMENTARIS -->
-                              <div class="comment">
-                                <span class="commtext c00">
-                                  <!-- TEXT DEL COMENTARI -->
-                                  <div class="reply">        
-                                    <p>
-                                      <font size="1">
-                                        <u><a href="CANVIAR">reply</a></u> <!-- link a fer el reply -->
-                                      </font>
-                                    </p>
-                                  </div>
-                                </span>
-                              </div>
+                                <!-- LOOP DE COMMENTARIS -->
+                                <div class="comment">
+                                  <%= comment.content %>
+                                  <span class="commtext c00">
+                                   
+                                    <div class="reply">        
+                                      <p>
+                                        <font size="1">
+                                          <u><a href="CANVIAR">reply</a></u> <!-- link a fer el reply -->
+                                        </font>
+                                      </p>
+                                    </div>
+                                  </span>
+                                </div>
+                              
                             </td>
                           </td>
                         </tr>
+                        <% end %>
                       </tbody>
                     </table>
                   </td>
@@ -131,37 +134,4 @@
                 
               
 
-<!-- <p>
-  <strong>Author:</strong>
-  <%= @post.author %>
-</p>
 
-<p>
-  <strong>Title:</strong>
-  <%= @post.title %>
-</p>
-
-<p>
-  <strong>Content:</strong>
-  <%= @post.content %>
-</p>
-
-<p>
-  <strong>Points:</strong>
-  <%= @post.points %>
-</p>
-
-<p>
-  <strong>Numcomments:</strong>
-  <%= @post.numcomments %>
-</p>
-
-<%= link_to 'Edit', edit_post_path(@post) %> |
-<%= link_to 'Back', posts_path %>
-
-
-
-  <form method="put" action=<%comment_post_path(@post)%>>
-    <textarea name="content" rows="6" cols="60"></textarea>
-  <br><br><input type="submit" value="add comment"></form>
->>>>>>> dev -->
