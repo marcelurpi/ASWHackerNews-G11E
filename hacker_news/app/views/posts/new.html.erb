@@ -26,11 +26,30 @@
               <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
               <%= hidden_field_tag :created_at, DateTime.now() %>
               <%= hidden_field_tag :updated_at, DateTime.now() %>
+              <%= hidden_field_tag :id_post, Time.now.to_i %>
               <%= hidden_field_tag :author, "TATI-hardcoded" %>
               <table border="0">
                 <tr>
                   <td>title</td>
-                  <td><input type="text" name="title" value="" size="50" autofocus="t" oninput="tlen(this)" onfocus="tlen(this)"><span style="margin-left:10px"></span></td>
+                  <td>
+                    <input
+                      type="text"
+                      name="title"
+                      value=""
+                      size="50"
+                      autofocus="t"
+                      oninput="tlen(this)"
+                      onfocus="tlen(this)"
+                    /><span style="margin-left:10px"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>url</td>
+                  <td><input type="url" name="url" value="" size="50" /></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td><b>or</b></td>
                 </tr>
                 <tr>
                   <td>text</td>
