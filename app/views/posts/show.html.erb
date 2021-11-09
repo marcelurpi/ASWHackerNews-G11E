@@ -23,7 +23,6 @@
                     </span>
                   </td>
               </tr></tbody></table></td></tr>
-
         <tr id="pagespace" title=#{post.title} style="height:10px"></tr>
         <tr>
           <td>
@@ -131,4 +130,38 @@
       </body>
                 
               
-      
+
+<!-- <p>
+  <strong>Author:</strong>
+  <%= @post.author %>
+</p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @post.title %>
+</p>
+
+<p>
+  <strong>Content:</strong>
+  <%= @post.content %>
+</p>
+
+<p>
+  <strong>Points:</strong>
+  <%= @post.points %>
+</p>
+
+<p>
+  <strong>Numcomments:</strong>
+  <%= @post.numcomments %>
+</p>
+
+<%= link_to 'Edit', edit_post_path(@post) %> |
+<%= link_to 'Back', posts_path %>
+
+
+
+  <form method="put" action=<%comment_post_path(@post)%>>
+    <textarea name="content" rows="6" cols="60"></textarea>
+  <br><br><input type="submit" value="add comment"></form>
+>>>>>>> dev -->

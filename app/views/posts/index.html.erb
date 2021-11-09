@@ -15,7 +15,11 @@
                 </td>
                 <td style="text-align:right;padding-right:4px;">
                   <span class="pagetop">
-                    <a id="me" href="">TATI-hardcoded</a> (1) | <a id="logout" href="">logout</a>
+                    <% if cookies.signed[:user_id].nil? %>
+                      <a id="login" href="<%= login_path %>">signup/login</a>
+                    <% else %>
+                      <a id="me" href=""><%= User.find(cookies.signed[:user_id]).name %></a> (1) | <a id="logout" href="<%= delete_login_path %>">logout</a>
+                    <% end %>
                   </span>
                 </td>
               </tr>
@@ -35,23 +39,24 @@
                   </td>
                   <td valign="top" class="votelinks">
                     <center>
-                      <a id="up_28940860" onclick="" href="">
-                        <div class="votearrow" title="upvote"></div>
+                      <!--<a id="up_28940860" onclick="" href="">-->
+                        <div class="votearrow" title="upvote"><%= link_to '_', like_post_path(post), method: :put %></div>
                       </a>
                     </center>
                   </td>
                   <td class="title">
-                    <a href="https://<%= post.content.gsub("https://", "").gsub("http://", "") %>" class="titlelink"><%= link_to "#{post.title}", post %></a>
+                    <%= link_to "#{post.title}", post %>
+                    <a href="https://<%= post.content.gsub("https://", "").gsub("http://", "") %>" class="titlelink"><%= post.title %></a>
                     <span class="sitebit comhead"> (<a href="https://<%= post.content.gsub("https://", "").gsub("http://", "").split('/').first %>"><span class="sitestr"><%= post.content.gsub("https://", "").gsub("http://", "").split('/').first %></span></a>)</span>
                   </td>
                 </tr>
                 <tr>
                   <td colspan="2"></td>
                   <td class="subtext">
-                    <span class="score" id="score_28940860"><%= post.points %> points</span> 
+                    <span class="score" id="score"><%= post.points %> points</span> 
                     by <a href="" class="hnuser"><%= post.author %></a> 
-                    <span class="age" title="2021-10-21T05:57:57"><a href=""><%= time_ago_in_words(post.created_at)  %> ago</a></span> 
-                    <span id="unv_28940860"></span> | <a href="" onclick="">hide</a> | <a href=""><%= post.numcomments %> comments</a>
+                    <span class="age" title="time_ago"><a href=""><%= time_ago_in_words(post.created_at)  %> ago </a></span> 
+                    <span id="unv_28940860"></span> | <a href="" onclick="">hide</a> | <%= link_to 'unlike', unlike_post_path(post), method: :put %> | <%= link_to 'Show', post %> <%= post.numcomments %> comments</a>
                   </td>
                 </tr>
                 <tr class="spacer" style="height:5px"></tr>
