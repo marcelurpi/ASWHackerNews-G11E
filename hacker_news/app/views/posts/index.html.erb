@@ -15,7 +15,7 @@
                 </td>
                 <td style="text-align:right;padding-right:4px;">
                   <span class="pagetop">
-                    <% if cookies.signed[:user_id].nil? %>
+                    <% if cookies.signed[:user_id].nil? %> 
                       <a id="login" href="<%= login_path %>">signup/login</a>
                     <% else %>
                       <a id="me" href=""><%= User.find(cookies.signed[:user_id]).name %></a> (1) | <a id="logout" href="<%= delete_login_path %>">logout</a>
@@ -44,9 +44,8 @@
                       </a>
                     </center>
                   </td>
-                  <td class="title">
-                    <%= link_to "#{post.title}", post %>
-                    <a href="https://<%= post.content.gsub("https://", "").gsub("http://", "") %>" class="titlelink"><%= post.title %></a>
+                 <td class="title">
+                    <a href="https://<%= post.content.gsub("https://", "").gsub("http://", "") %>" class="titlelink"><%= link_to "#{post.title}", post %></a>
                     <span class="sitebit comhead"> (<a href="https://<%= post.content.gsub("https://", "").gsub("http://", "").split('/').first %>"><span class="sitestr"><%= post.content.gsub("https://", "").gsub("http://", "").split('/').first %></span></a>)</span>
                   </td>
                 </tr>
