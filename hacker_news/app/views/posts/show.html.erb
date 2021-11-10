@@ -27,3 +27,9 @@
 
 <%= link_to 'Edit', edit_post_path(@post) %> |
 <%= link_to 'Back', posts_path %>
+
+
+
+  <form method="put" action=<%comment_post_path(@post)%>>
+    <textarea name="content" rows="6" cols="60"></textarea>
+  <br><br><input type="submit" value="add comment"></form>

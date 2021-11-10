@@ -7,7 +7,8 @@ Rails.application.routes.draw do
   resources :submissions
   resources :posts do
     put 'like', on: :member and
-    put 'unlike', on: :member
+    put 'unlike', on: :member and
+    put 'comment', on: :member
   end
   
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
