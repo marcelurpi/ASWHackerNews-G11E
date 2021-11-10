@@ -67,6 +67,7 @@
                         <% end %>
                         -->
                         <%= hidden_field_tag :user_id, 1 %> 
+                        <%= hidden_field_tag :parent, @post.id_post %>
                         <textarea name="content" rows="6" cols="60"></textarea>
                         <br><br>
                         <input type="submit" value="add comment">
@@ -80,7 +81,10 @@
                   <td>
                     <table border="0">
                       <tbody>
-                        <% @comments.each do |comment| %>
+                        
+                        <%= com = @post.comments %> 
+                        <% com.each do |comment| %>
+                          
                         <tr>
                           <td class="ind" indent="0">
                             <img src="s.gif" height="1" width="0">
@@ -97,7 +101,8 @@
                             <td class="default">
                               <div style="margin-top:2px; margin-bottom:-10px;">
                                 <span class="comhead">
-                                  <a href="CANVIAR" class="hnuser"><%= comment.user_id %></a> <!-- link a usuari-->
+                                  
+                                  <a href="CANVIAR" class="hnuser"><%= comment.user_id %></a> <!-- link a usuari, canviar amb cookies pq surti el nom-->
                                   <span class="age" title="2021-11-08T17:15:34">
                                     <a href="CANVIAR"><%= time_ago_in_words(comment.created_at)  %> ago</a>
                                   </span> 
@@ -109,11 +114,9 @@
                                 </span>
                               </div>
                               <br>
-                                <!-- LOOP DE COMMENTARIS -->
                                 <div class="comment">
-                                  <%= comment.content %>
                                   <span class="commtext c00">
-                                   
+                                    <%= comment.content %>
                                     <div class="reply">        
                                       <p>
                                         <font size="1">
