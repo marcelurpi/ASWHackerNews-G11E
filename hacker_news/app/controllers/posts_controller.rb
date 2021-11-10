@@ -22,7 +22,7 @@ class PostsController < ApplicationController
   
   # PUT /posts/1/comment
   def comment
-      @comment = @post.comments.create(content: params[:content], id_post: @post.id_post)
+      @comment = @post.comments.create(content: params[:content], created_at: Time.now, updated_at: Time.now, comment_id: Time.now.to_i, user_id: params[:user_id]) #supuestamente el id del post ya está asociado a comment
   end
 
   # GET /posts/1/edit

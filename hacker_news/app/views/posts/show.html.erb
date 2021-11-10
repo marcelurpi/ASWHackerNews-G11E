@@ -59,13 +59,19 @@
                   <tr>
                     <td colspan="2"></td>
                     <td>
-                      <form method="put" action=<%= comment_post_path(@post)%>>
+                     <form method="put" action=<%comment_post_path(@post)%>>
                          <!-- id del pare -->
+                        <!--<% if cookies.signed[:user_id].nil? == false %>
+                          <%= hidden_field_tag :id_author, User.find(cookies.signed[:user_id]).id %>
+                        <% end %>
+                        -->
+                        <%= hidden_field_tag :user_id, 1 %> 
                         <textarea name="content" rows="6" cols="60"></textarea>
                         <br><br>
                         <input type="submit" value="add comment">
                       </form>
                     </td></tr></table>
+                    
             <br>
             <br>
             <table border="0" class="comment-tree">
@@ -91,7 +97,7 @@
                             <td class="default">
                               <div style="margin-top:2px; margin-bottom:-10px;">
                                 <span class="comhead">
-                                  <a href="CANVIAR" class="hnuser"><%= comment.author %></a> <!-- link a usuari-->
+                                  <a href="CANVIAR" class="hnuser"><%= comment.user_id %></a> <!-- link a usuari-->
                                   <span class="age" title="2021-11-08T17:15:34">
                                     <a href="CANVIAR"><%= time_ago_in_words(comment.created_at)  %> ago</a>
                                   </span> 
