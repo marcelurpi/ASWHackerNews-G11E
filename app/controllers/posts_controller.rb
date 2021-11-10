@@ -1,5 +1,5 @@
 class PostsController < ApplicationController
-  before_action :set_post, only: %i[ show edit update destroy ]
+  before_action :set_post, only: %i[ show edit update destroy comment ]
 
   # GET /posts or /posts.json
   def index
@@ -22,7 +22,8 @@ class PostsController < ApplicationController
   
   # PUT /posts/1/comment
   def comment
-      @comment = @post.comments.create(content: params[:content], created_at: Time.now, updated_at: Time.now, comment_id: Time.now.to_i, user_id: params[:user_id]) #supuestamente el id del post ya está asociado a comment
+      @comment = @post.comments.create(content: params[:content], user_id: params[:user_id]) #supuestamente el id del post ya está asociado a comment
+      redirect_to (@post)
   end
 
   # GET /posts/1/edit

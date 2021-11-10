@@ -59,7 +59,8 @@
                   <tr>
                     <td colspan="2"></td>
                     <td>
-                     <form method="put" action=<%comment_post_path(@post)%>>
+                    <form method="post" action="<%= comment_post_path(@post) %>">
+                      <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
                          <!-- id del pare -->
                         <!--<% if cookies.signed[:user_id].nil? == false %>
                           <%= hidden_field_tag :id_author, User.find(cookies.signed[:user_id]).id %>
@@ -71,7 +72,6 @@
                         <input type="submit" value="add comment">
                       </form>
                     </td></tr></table>
-                    
             <br>
             <br>
             <table border="0" class="comment-tree">
