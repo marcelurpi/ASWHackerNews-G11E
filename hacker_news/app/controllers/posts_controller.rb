@@ -9,7 +9,7 @@ class PostsController < ApplicationController
   def newest
     @posts = Post.all.sort { |a, b| -a.created_at.to_i <=> -b.created_at.to_i }
   end
-
+  
   # GET /posts/1 or /posts/1.json
   def show
   end
@@ -27,6 +27,30 @@ class PostsController < ApplicationController
   # GET /posts/1/edit
   def edit
   end
+
+  
+  
+  #Hauria de trobar la manera d'identificar si l'usuari actual ha donat like o no per quan tinguem un login
+  #Em dona error de Nil class com si el que li passés de l'índex estigués buit
+  def like
+    @post.points = @post.points + 1
+    @post.save
+    respond_to do |format|
+      format.html { redirect_to "/posts"}
+      format.json { head :no_content }
+    end
+  end
+  
+  # Encara no comprovat pq no puc treure el like que no he posat abans
+  def unlike
+    @post.points = @post.points - 1
+    @post.save
+    respond_to do |format|
+      format.html { redirect_to "/posts"}
+      format.json { head :no_content }
+    end
+  end
+
 
   # POST /posts or /posts.json
   def create
