@@ -10,6 +10,10 @@ class PostsController < ApplicationController
     @posts = Post.all.sort { |a, b| -a.created_at.to_i <=> -b.created_at.to_i }
   end
   
+  def ask
+    @postsask = Post.where(url: "")
+  end 
+  
   # GET /posts/1 or /posts/1.json
   def show
     @comments = Comment.all 
