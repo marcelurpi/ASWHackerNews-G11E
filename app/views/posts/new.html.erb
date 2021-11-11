@@ -27,7 +27,7 @@
               <%= hidden_field_tag :created_at, DateTime.now() %>
               <%= hidden_field_tag :updated_at, DateTime.now() %>
               <%= hidden_field_tag :id_post, Time.now.to_i %>
-              <%= hidden_field_tag :author, "TATI-hardcoded" %>
+              <%= hidden_field_tag :author, User.find(cookies.signed[:user_id]).name %>
               <table border="0">
                 <tr>
                   <td>title</td>
