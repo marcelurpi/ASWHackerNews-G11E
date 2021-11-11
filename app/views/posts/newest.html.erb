@@ -15,7 +15,11 @@
                 </td>
                 <td style="text-align:right;padding-right:4px;">
                   <span class="pagetop">
-                    <a id="me" href="">TATI-hardcoded</a> (1) | <a id="logout" href="">logout</a>
+                    <% if cookies.signed[:user_id].nil? %> 
+                      <a id="login" href="<%= login_path %>">signup/login</a>
+                    <% else %>
+                      <a id="me" href="<%= profile_login_path(:name => User.find(cookies.signed[:user_id]).name) %>"><%= User.find(cookies.signed[:user_id]).name %></a> | <a id="logout" href="<%= delete_login_path %>">logout</a>
+                    <% end %>
                   </span>
                 </td>
               </tr>
@@ -51,7 +55,7 @@
                     <span class="score" id="score_28940860"><%= post.points %> points</span> 
                     by <a href="" class="hnuser"><%= post.author %></a> 
                     <span class="age" title="2021-10-21T05:57:57"><a href=""><%= time_ago_in_words(post.created_at)  %> ago</a></span> 
-                    <span id="unv_28940860"></span> | <a href="" onclick="">hide</a> | <a href=""><%= post.numcomments %> comments</a>
+                    <span id="unv_28940860"></span> | <a href="" onclick="">hide</a> | <a href=""><%= post.numcomments %> comments </a>
                   </td>
                 </tr>
                 <tr class="spacer" style="height:5px"></tr>
