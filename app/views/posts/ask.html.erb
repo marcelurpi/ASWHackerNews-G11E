@@ -15,7 +15,11 @@
                 </td>
                 <td style="text-align:right;padding-right:4px;">
                   <span class="pagetop">
-                    <a id="me" href="">TATI-hardcoded</a> (1) | <a id="logout" href="">logout</a>
+                    <% if cookies.signed[:user_id].nil? %> 
+                      <a id="login" href="<%= login_path %>">signup/login</a>
+                    <% else %>
+                      <a id="me" href="<%= profile_login_path(:name => User.find(cookies.signed[:user_id]).name) %>"><%= User.find(cookies.signed[:user_id]).name %></a> | <a id="logout" href="<%= delete_login_path %>">logout</a>
+                    <% end %>
                   </span>
                 </td>
               </tr>
@@ -41,8 +45,10 @@
                     </center>
                   </td>
                   <td class="title">
-                    <a href="https://<%= post.content.gsub("https://", "").gsub("http://", "") %>" class="titlelink"><%= post.title %></a>
-                    <span class="sitebit comhead"> (<a href="https://<%= post.content.gsub("https://", "").gsub("http://", "").split('/').first %>"><span class="sitestr"><%= post.content.gsub("https://", "").gsub("http://", "").split('/').first %></span></a>)</span>
+                    <%= link_to "#{post.title}", post %>
+                    <% if !post.url.nil? && !post.url.empty? %>
+                    <span class="sitebit comhead"> (<a href="https://<%= post.url.gsub("https://", "").gsub("http://", "").split('/').first %>"><span class="sitestr"><%= post.url.gsub("https://", "").gsub("http://", "").split('/').first %></span></a>)</span>
+                    <% end %>
                   </td>
                 </tr>
                 <tr>
