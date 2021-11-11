@@ -45,9 +45,11 @@
                     </center>
                   </td>
                   <td class="title">
-                    <%= link_to "#{post.title}", post %>
                     <% if !post.url.nil? && !post.url.empty? %>
+                    <a href="https://<%= post.url.gsub("https://", "").gsub("http://", "") %>"><%= post.title %></a>
                     <span class="sitebit comhead"> (<a href="https://<%= post.url.gsub("https://", "").gsub("http://", "").split('/').first %>"><span class="sitestr"><%= post.url.gsub("https://", "").gsub("http://", "").split('/').first %></span></a>)</span>
+                    <% else %>
+                    <%= link_to "#{post.title}", post %>
                     <% end %>
                   </td>
                 </tr>
