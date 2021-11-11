@@ -18,7 +18,7 @@
                     <% if cookies.signed[:user_id].nil? %> 
                       <a id="login" href="<%= login_path %>">signup/login</a>
                     <% else %>
-                      <a id="me" href="<%= profile_login_path(:name => User.find(cookies.signed[:user_id]).name) %>"><%= User.find(cookies.signed[:user_id]).name %></a> (1) | <a id="logout" href="<%= delete_login_path %>">logout</a>
+                      <a id="me" href="<%= profile_login_path(:name => User.find(cookies.signed[:user_id]).name) %>"><%= User.find(cookies.signed[:user_id]).name %></a> | <a id="logout" href="<%= delete_login_path %>">logout</a>
                     <% end %>
                   </span>
                 </td>
