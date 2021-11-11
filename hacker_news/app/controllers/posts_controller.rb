@@ -1,5 +1,5 @@
 class PostsController < ApplicationController
-  before_action :set_post, only: %i[ show edit update destroy ]
+  before_action :set_post, only: %i[ show edit update destroy comment like unlike]
 
   # GET /posts or /posts.json
   def index
@@ -13,29 +13,72 @@ class PostsController < ApplicationController
   def ask
     @postsask = Post.where(url: "")
   end 
-
+  
   # GET /posts/1 or /posts/1.json
   def show
+    @comments = Comment.all 
   end
 
   # GET /posts/new
   def new
     @post = Post.new
   end
+  
+  # PUT /posts/1/comment
+  def comment
+      @comment = @post.comments.create(content: params[:content], user_id: params[:user_id]) #supuestamente el id del post ya está asociado a comment
+      redirect_to (@post)
+  end
 
   # GET /posts/1/edit
   def edit
   end
+
+  #Hauria de trobar la manera d'identificar si l'usuari actual ha donat like o no per quan tinguem un login
+  #Em dona error de Nil class com si el que li passés de l'índex estigués buit
+  def like
+    @post.points = @post.points + 1
+    @post.save
+    respond_to do |format|
+      format.html { redirect_to "/posts"}
+      format.json { head :no_content }
+    end
+  end
   
+  # Encara no comprovat pq no puc treure el like que no he posat abans
+  def unlike
+    @post.points = @post.points - 1
+    @post.save
+    respond_to do |format|
+      format.html { redirect_to "/posts"}
+      format.json { head :no_content }
+    end
+  end
 
   # POST /posts or /posts.json
   def create
     @post = Post.new(post_params)
-
+    
     respond_to do |format|
       if @post.save
         format.html { redirect_to "/posts/newest", notice: "Post was successfully created." }
         format.json { head :no_content }
+=begin
+      if @post.title != "" and @post.save         #contrubions tipus url o normal (titol amb url OR content)
+        if (@post.url == "" and @post.content != "") or (@post.content == "" and @post.url != "")
+          format.html { redirect_to "/posts/newest", notice: "Post was successfully created." }
+          format.json { head :no_content }
+        else
+          format.html { render :new, status: :unprocessable_entity }
+          format.json { render json: @post.errors, status: :unprocessable_entity }
+
+      elsif @post.title == "" and @post.save and @post.url == "" and @post.content == ""          #tipus ask
+        #falta implementar :
+        # Publicació de noves Contribucions de tipus "ask". Fixeu-vos que si s'omplen alhora els camps "url" i "text", 
+        #si l"url" és correcte i no existeix, es crea una nova Contribució per a aquell "url" i un nou comentari 
+        #associat a aquesta Contribució amb el contingut del camp "text". L'autor del comentari és, òbviament, el mateix que 
+        #ha creat la Contribució
+=end
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @post.errors, status: :unprocessable_entity }
@@ -73,6 +116,6 @@ class PostsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def post_params
-      params.permit(:created_at, :updated_at,  :title, :content, :author, :url)
+      params.permit(:created_at, :updated_at,  :title, :content, :author, :url, :id_post)
     end
 end
