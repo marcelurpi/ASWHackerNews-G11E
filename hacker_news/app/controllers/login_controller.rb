@@ -2,6 +2,14 @@ class LoginController < ApplicationController
   def new
   end
   
+  def profile
+    @user = User.find_by(name: params[:name])
+  end
+  
+  def update
+    User.update(about: params[:about])
+  end
+  
   def create
     if user = authenticate_with_google
       cookies.signed[:user_id] = user.id

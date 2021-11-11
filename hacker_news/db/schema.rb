@@ -43,6 +43,7 @@ ActiveRecord::Schema.define(version: 2021_11_10_160402) do
     t.string "google_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "about"
   end
 
 end
