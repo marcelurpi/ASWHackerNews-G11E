@@ -52,9 +52,7 @@
                       <span class="age" title="2021-10-27T17:42:45">
                         <a href="CANVIAR"><%= time_ago_in_words(@post.created_at)  %> ago</a></span> <!-- no entenc on se suposa que porta-->
                       <span id="unv_29016506"></span> 
-                          | <a href="CANVIAR">hide</a> <!-- no cal -->
-                          | <a href="CANVIAR">favorite</a> <!-- no cal -->
-                          | <a href="CANVIAR"><%= @post.numcomments %>&nbsp;comments</a> <!-- el link ha de portar a la pg actual -->              
+                          | <%= @post.numcomments %>&nbsp;comments <!-- el link ha de portar a la pg actual -->              
                     </td></tr>
                   <tr>
                     <td colspan="2"></td>
@@ -62,11 +60,11 @@
                     <form method="post" action="<%= comment_post_path(@post) %>">
                       <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
                          <!-- id del pare -->
-                        <!--<% if cookies.signed[:user_id].nil? == false %>
-                          <%= hidden_field_tag :id_author, User.find(cookies.signed[:user_id]).id %>
+                        <% if cookies.signed[:user_id].nil? == false %>
+                          <%= hidden_field_tag :id_author, User.find(cookies.signed[:user_id]).name %>
                         <% end %>
-                        -->
-                        <%= hidden_field_tag :user_id, 1 %> 
+                        
+                        <!-- %= hidden_field_tag :user_id, 1 %--> 
                         <%= hidden_field_tag :parent, @post.id_post %>
                         <textarea name="content" rows="6" cols="60"></textarea>
                         <br><br>
@@ -81,8 +79,7 @@
                   <td>
                     <table border="0">
                       <tbody>
-                        
-                        <%= com = @post.comments %> 
+                        <% com = @post.comments %> 
                         <% com.each do |comment| %>
                           
                         <tr>
@@ -102,15 +99,11 @@
                               <div style="margin-top:2px; margin-bottom:-10px;">
                                 <span class="comhead">
                                   
-                                  <a href="CANVIAR" class="hnuser"><%= comment.user_id %></a> <!-- link a usuari, canviar amb cookies pq surti el nom-->
+                                  <a href="CANVIAR" class="hnuser"> <%= comment.user_id%> </a> <!-- link a usuari, canviar amb cookies pq surti el nom-->
                                   <span class="age" title="2021-11-08T17:15:34">
-                                    <a href="CANVIAR"><%= time_ago_in_words(comment.created_at)  %> ago</a>
+                                    <%= time_ago_in_words(comment.created_at)  %> ago
                                   </span> 
                                   <span id="unv_29151509"></span>
-                                  <span class="navs"> <!-- PORTA AL SEGUENT COMENTARI, POTSER NO CAL -->
-                                     | <a href="CANVIAR" aria-hidden="true">next</a>
-                                  </span> 
-                                  <a class="togg" n="3" href="CANVIAR" onclick="return toggle(event, 29151509)">[–]</a> <!-- DISMINUEIX COMENTARI, POTSER NO CAL-->                  
                                 </span>
                               </div>
                               <br>
