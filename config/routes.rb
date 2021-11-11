@@ -6,6 +6,9 @@ Rails.application.routes.draw do
     get 'login/delete', to: 'login#delete', as: :delete_login
     get 'posts/newest', to: 'posts#newest'
     resources :submissions
-    resources :posts
+    resources :posts do
+      put 'like', on: :member and
+      put 'unlike', on: :member and
+      post 'comment', on: :member
     root 'posts#index'
 end
