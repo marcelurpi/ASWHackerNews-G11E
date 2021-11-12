@@ -24,10 +24,12 @@ class CommentsController < ApplicationController
   # POST /comments
   # POST /comments.json
   def create
-    @comment = Comment.new(comment_params)
+    @commentable.comments.build(comment_params)
+    
+    #@comment = Comment.new(comment_params)
 
     respond_to do |format|
-      if @comment.saver
+      if @commentable.save
         format.html { redirect_to @comment, notice: 'Comment was successfully created.' }
         format.json { render :show, status: :created, location: @comment }
       else
@@ -58,5 +60,13 @@ class CommentsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def comment_params
       params.require(:comment).permit(:content, :created_at, :updated_at, :comment_id, :user_id)
+    end
+    
+    def find_commentable
+      if params[:comment_id]
+        @commentable = Comment.find_by_id(params[:comment_id])
+      else if params[:post_id]
+        @commentable = Post.find_by_id(params[:post_id])
+      end
     end
 end

@@ -1,0 +1,40 @@
+<tr>
+    <td class="ind" indent="0">
+        <img src="s.gif" height="1" width="0">
+    </td>
+    <td valign="top" class="votelinks">
+        <center>
+            <a id="up_29151509" href="CANVIAR"> <!-- link a upvote -->
+                <div class="votearrow" title="upvote"></div>
+            </a>
+        </center>
+    </td>
+                          
+    <td class="default">
+        <div style="margin-top:2px; margin-bottom:-10px;">
+            <span class="comhead">
+                <a href="CANVIAR" class="hnuser"> <%= comment.user_id%> </a> <!-- link a usuari, canviar amb cookies pq surti el nom-->
+                    <span class="age" title="2021-11-08T17:15:34">
+                        <%= time_ago_in_words(comment.created_at)  %> ago
+                    </span> 
+                    <span id="unv_29151509"></span>
+                    </span>
+        </div>
+        <br>
+        <div class="comment">
+            <span class="commtext c00">
+                <%= comment.content %>
+                <div class="reply">        
+                    <p>
+                        <font size="1">
+                            <u><a href="CANVIAR">reply</a></u> <!-- link a fer el reply -->
+                        </font>
+                    </p>
+                 </div>
+            </span>
+            <ul>
+                <%= render partial: 'posts/comment', collection: comment.comments %>
+            </ul>
+        </div>
+    </td>
+</tr>

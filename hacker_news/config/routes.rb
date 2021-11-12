@@ -12,6 +12,11 @@ Rails.application.routes.draw do
       put 'like', on: :member and
       put 'unlike', on: :member and
       post 'comment', on: :member
+      resources :comments
+    end
+    resources :comments do
+      resources :comments
+      post 'comment', on: :member
     end
     root 'posts#index'
 end
