@@ -1,5 +1,5 @@
 class CommentsController < ApplicationController
-  before_action :set_comment, only: [:show, :update, :destroy]
+  before_action :set_comment, only: [:show, :update, :destroy, :reply]
 
   # GET /comments
   # GET /comments.json
@@ -49,7 +49,8 @@ class CommentsController < ApplicationController
       format.json { head :no_content }
     end
   end
-
+  
+ 
 
   private
     # Use callbacks to share common setup or constraints between actions.
@@ -65,7 +66,7 @@ class CommentsController < ApplicationController
     def find_commentable
       if params[:comment_id]
         @commentable = Comment.find_by_id(params[:comment_id])
-      else if params[:post_id]
+      else params[:post_id]
         @commentable = Post.find_by_id(params[:post_id])
       end
     end

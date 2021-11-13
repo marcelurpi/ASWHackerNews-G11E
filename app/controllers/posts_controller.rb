@@ -16,7 +16,6 @@ class PostsController < ApplicationController
   
   # GET /posts/1 or /posts/1.json
   def show
-   
     @comments = Comment.all
     @users = User.all
   end
@@ -37,6 +36,7 @@ class PostsController < ApplicationController
   # GET /posts/1/edit
   def edit
   end
+  
 
   #Hauria de trobar la manera d'identificar si l'usuari actual ha donat like o no per quan tinguem un login
   #Em dona error de Nil class com si el que li passés de l'índex estigués buit
