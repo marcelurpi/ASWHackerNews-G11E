@@ -1,5 +1,5 @@
 class CommentsController < ApplicationController
-  before_action :set_comment, only: [:show, :update, :destroy, :reply]
+  before_action :find_commentable, :set_comment, only: [:show, :update, :destroy, :comment]
 
   # GET /comments
   # GET /comments.json
@@ -20,16 +20,27 @@ class CommentsController < ApplicationController
   # GET /comments/1/edit
   def edit
   end
+  
+  # PUT /posts/1/comment
+  def comment
+    
+    @child = @commentable.comments.create(content: params[:content], user_id: params[:user_id])
+    
+    redirect_to (@child)
+      
+  end
+  
+  
 
   # POST /comments
   # POST /comments.json
   def create
-    @commentable.comments.build(comment_params)
+    @comment = Comment.new(comment_params)
     
     #@comment = Comment.new(comment_params)
 
     respond_to do |format|
-      if @commentable.save
+      if @comment.save
         format.html { redirect_to @comment, notice: 'Comment was successfully created.' }
         format.json { render :show, status: :created, location: @comment }
       else
@@ -66,8 +77,10 @@ class CommentsController < ApplicationController
     def find_commentable
       if params[:comment_id]
         @commentable = Comment.find_by_id(params[:comment_id])
+        logger.debug "parent is a comment"
       else params[:post_id]
         @commentable = Post.find_by_id(params[:post_id])
+        logger.debug "parent is a post"
       end
     end
 end
