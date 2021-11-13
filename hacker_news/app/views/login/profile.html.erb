@@ -48,7 +48,7 @@
                   </tr>
                   <tr>
                     <td valign="top">about:</td>
-                    <% if !cookies.signed[:user_id].nil? && @user.name = User.find(cookies.signed[:user_id]).name %>
+                    <% if !cookies.signed[:user_id].nil? && @user.name == User.find(cookies.signed[:user_id]).name %>
                     <td><textarea rows=5 cols=60 name="about"><%= @user.about %></textarea></td>
                     <% else %>
                     <td><%= @user.about %></td>
@@ -72,7 +72,7 @@
                   </tr>
                 </table>
                 </br>
-                <% if !cookies.signed[:user_id].nil? && @user.name = User.find(cookies.signed[:user_id]).name %>
+                <% if !cookies.signed[:user_id].nil? && @user.name == User.find(cookies.signed[:user_id]).name %>
                 <input type="submit" value="update">
                 <% end %>
               </form>
