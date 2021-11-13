@@ -8,9 +8,7 @@
                             <tbody>
                                 <tr>
                                     <td style="width:18px;padding-right:4px">
-                                        <a href="https://news.ycombinator.com">
-                                            <img src="y18.gif" width="18" height="18" style="border:1px white solid;">
-                                        </a>
+                                        <a href="<%= posts_path %>"><img src="https://news.ycombinator.com/y18.gif" width="18" height="18" style="border:1px white solid;"></a>
                                     </td>
                                     <td style="line-height:12pt; height:10px;">
                                         <span class="pagetop"><b>Add Comment</b></span></td>
@@ -36,14 +34,13 @@
                                     <td class="default">
                                         <div style="margin-top:2px; margin-bottom:-10px;">
                                             <span class="comhead">
-                                                <a href="CANVIAR" class="hnuser">CANVIAR A NOM USUARI</a> 
+                                                <a href="CANVIAR" class="hnuser"> <%= @comment.user_id %> </a> 
                                                 <span class="age" title="2021-11-12T16:45:17">
-                                                    <!-- %= time_ago_in_words(@comment.created_at) % -->
+                                                    <%= time_ago_in_words(@comment.created_at) %> ago
                                                 </span> 
                                                 <span id="unv_29201335"></span>
                                                 <span class="navs"> 
                                                     | <a href="CANVIAR">parent</a> 
-                                                    | <a href="CANVIAR">context</a> <!-- NO CAL SEGUR -->
                                                 </span>
                                                 <span class="onstory"> 
                                                     |  on: <a href="CANVIAR">POST TITLE</a>
@@ -53,7 +50,7 @@
                                         <br>
                                         <div class="comment">
                                             <span class="commtext c00"> 
-                                                <!-- %= @comment.content % -->
+                                                <%= @comment.content %>
                                                 <div class="reply"></div>
                                             </span>
                                         </div>
@@ -63,7 +60,12 @@
                                 <tr>
                                     <td colspan="2"></td>
                                     <td>
-                                        <form method="post" action="">
+                                        <%= form_for [@comment, Comment.new] do |f| %>
+                                          <%=f.text_area :content, placeholder: "Add a Reply" %><br/>
+                                          <%=f.submit "Reply"  %>
+                                          <% end %>
+                                          
+                                        <form method="post" action="<%= comment_comment_path(@comment) %>">
                                             <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
                                              
                                             <% if cookies.signed[:user_id].nil? %> 

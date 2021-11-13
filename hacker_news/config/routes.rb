@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     get 'posts/ask', to: 'posts#ask'
     
     resources :submissions
+    
     resources :posts do
       put 'like', on: :member and
       put 'unlike', on: :member and
