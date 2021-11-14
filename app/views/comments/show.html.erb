@@ -61,9 +61,11 @@
                                     <td colspan="2"></td>
                                     <td>
                                         <%= form_for [@comment, Comment.new] do |f| %>
-                                          <%=f.text_area :content, placeholder: "Add a Reply" %><br/>
-                                          <%=f.submit "Reply"  %>
-                                          <% end %>
+                                            <%=f.hidden_field :commentable_id, value: @comment.id %>
+                                            <%=f.hidden_field :commentable_type, value: "Comment" %>
+                                            <%=f.text_area :content, placeholder: "Add a Reply" %><br/>
+                                            <%=f.submit "Reply"  %>
+                                        <% end %>
                                           
                                         <form method="post" action="<%= comment_comment_path(@comment) %>">
                                             <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
