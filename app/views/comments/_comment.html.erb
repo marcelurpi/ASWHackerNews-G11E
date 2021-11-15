@@ -31,13 +31,13 @@
                             </div>
                             <br>
                             <div class="comment">
-                                <p> <%= comment.content %> </p>
+                                <%= comment.content %>
                                 <span class="commtext c00">
                                     <div class="reply">        
-                                        <p><font size="1">
+                                        <font size="1">
                                             <u><a><%= link_to "reply", comment_path(comment) %> </a></u>
                                         </font>
-                                        </p>
+                                        
                                     </div>
                                 </span>
                             </div>
@@ -49,15 +49,14 @@
     </tr>
     <tr>
         <tr class="athing comtr">
+            <td class="ind" indent="1">
+                <img src="https://news.ycombinator.com/s.gif" height="1" width="1">
+            </td>
             <td>
                 <table border="0">  
                     <tbody>
                         <tr>    
-                            <td class="ind" indent="1">
-                                <img src="s.gif" height="1" width="0">
-                            </td>
-                        </tr>
-                        <tr>
+                            
                             <%= render partial: 'comments/comment', collection: comment.comments %>
                         </tr>
                     </tbody>
