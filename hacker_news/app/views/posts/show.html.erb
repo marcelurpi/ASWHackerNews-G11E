@@ -6,23 +6,24 @@
             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="padding:2px">
               <tbody>
                 <tr>
-                  <td style="width:18px;padding-right:4px">
-                    <a href="<%= posts_path %>"> <!-- link a la pg principal DONE-->
-                      <img src="y18.gif" width="18" height="18" style="border:1px white solid;">
-                    </a></td>
+                  <td style="width:18px;padding-right:4px"><a href="<%= posts_path %>"><img src="https://news.ycombinator.com/y18.gif" width="18" height="18" style="border:1px white solid;"></a></td>
                   <td style="line-height:12pt; height:10px;">
                     <span class="pagetop">
-                      <b class="hnname"></b><a href="news">Hacker News</a></b>
-                      <a href="newest">new</a> | <a href="submit">submit</a>            
+                      <b class="hnname"><a href="<%= posts_path %>">Hacker News</a></b>
+                      <a href="<%= posts_newest_path %>">new</a> | <a href="<%= new_post_path %>">submit</a> | <a href="<%= posts_ask_path %>">ask</a>
                     </span>
                   </td>
                   <td style="text-align:right;padding-right:4px;">
                     <span class="pagetop">
-                      <!-- canviar -->
-                      <a id="me" href="">TATI-hardcoded</a> (1) | <a id="logout" href="">logout</a>
+                      <% if cookies.signed[:user_id].nil? %> 
+                        <a id="login" href="<%= login_path %>">signup/login</a>
+                      <% else %>
+                        <a id="me" href="<%= profile_login_path(:name => User.find(cookies.signed[:user_id]).name) %>"><%= User.find(cookies.signed[:user_id]).name %></a> | <a id="logout" href="<%= delete_login_path %>">logout</a>
+                      <% end %>
                     </span>
                   </td>
               </tr></tbody></table></td></tr>
+              <%= logger.debug "Header fins aqui" %>
         <tr id="pagespace" title=#{post.title} style="height:10px"></tr>
         <tr>
           <td>
@@ -49,24 +50,30 @@
                     <td class="subtext">
                       <span class="score" id="score_29016506"><%= @post.points %></span> 
                         by <a href="" class="hnuser"><%= @post.author %></a> 
-                      <span class="age" title="2021-10-27T17:42:45">
+                      <span class="age" title="<%@post.created_at%>">
                         <a href="CANVIAR"><%= time_ago_in_words(@post.created_at)  %> ago</a></span> <!-- no entenc on se suposa que porta-->
-                      <span id="unv_29016506"></span> 
-                          | <a href="CANVIAR">hide</a> <!-- no cal -->
-                          | <a href="CANVIAR">favorite</a> <!-- no cal -->
-                          | <a href="CANVIAR"><%= @post.numcomments %>&nbsp;comments</a> <!-- el link ha de portar a la pg actual -->              
+                      <span id="unv_29016506">
+                        | <%= @post.comments.length() %>&nbsp;comments
+                      </span> 
+                           <!-- el link ha de portar a la pg actual -->              
                     </td></tr>
+                  <tr>
+                    <td colspan="2"></td>
+                    <td><%= @post.content %></td>
+                  </tr>
                   <tr>
                     <td colspan="2"></td>
                     <td>
                     <form method="post" action="<%= comment_post_path(@post) %>">
                       <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
-                         <!-- id del pare -->
-                        <!--<% if cookies.signed[:user_id].nil? == false %>
-                          <%= hidden_field_tag :id_author, User.find(cookies.signed[:user_id]).id %>
+                         
+                        <% if cookies.signed[:user_id].nil? %> 
+                          <a id="login" href="<%= login_path %>"></a>
+                        <% else %>
+                          <%= hidden_field_tag :id_author, User.find(cookies.signed[:user_id]).name %>
                         <% end %>
-                        -->
-                        <%= hidden_field_tag :user_id, 1 %> 
+                        
+                        <!-- %= hidden_field_tag :user_id, 1 %--> 
                         <%= hidden_field_tag :parent, @post.id_post %>
                         <textarea name="content" rows="6" cols="60"></textarea>
                         <br><br>
@@ -74,63 +81,18 @@
                       </form>
                     </td></tr></table>
             <br>
-            <br>
             <table border="0" class="comment-tree">
               <tbody>
                 <tr class="comment" id="CANVIAR"> 
                   <td>
                     <table border="0">
                       <tbody>
+                         <%= logger.debug "ara fem render de comments" %>
+                        <ul>
+                          <%= render partial: 'comments/comment', collection: @post.comments %>
+                        </ul>  
                         
-                        <%= com = @post.comments %> 
-                        <% com.each do |comment| %>
-                          
-                        <tr>
-                          <td class="ind" indent="0">
-                            <img src="s.gif" height="1" width="0">
-                          </td>
-                          <td valign="top" class="votelinks">
-                            <center>
-                              <a id="up_29151509" href="CANVIAR"> <!-- link a upvote -->
-                                <div class="votearrow" title="upvote"></div>
-                              </a>
-                              </center>
-                          </td>
-                          
-                          <td class="default">
-                            <td class="default">
-                              <div style="margin-top:2px; margin-bottom:-10px;">
-                                <span class="comhead">
-                                  
-                                  <a href="CANVIAR" class="hnuser"><%= comment.user_id %></a> <!-- link a usuari, canviar amb cookies pq surti el nom-->
-                                  <span class="age" title="2021-11-08T17:15:34">
-                                    <a href="CANVIAR"><%= time_ago_in_words(comment.created_at)  %> ago</a>
-                                  </span> 
-                                  <span id="unv_29151509"></span>
-                                  <span class="navs"> <!-- PORTA AL SEGUENT COMENTARI, POTSER NO CAL -->
-                                     | <a href="CANVIAR" aria-hidden="true">next</a>
-                                  </span> 
-                                  <a class="togg" n="3" href="CANVIAR" onclick="return toggle(event, 29151509)">[–]</a> <!-- DISMINUEIX COMENTARI, POTSER NO CAL-->                  
-                                </span>
-                              </div>
-                              <br>
-                                <div class="comment">
-                                  <span class="commtext c00">
-                                    <%= comment.content %>
-                                    <div class="reply">        
-                                      <p>
-                                        <font size="1">
-                                          <u><a href="CANVIAR">reply</a></u> <!-- link a fer el reply -->
-                                        </font>
-                                      </p>
-                                    </div>
-                                  </span>
-                                </div>
-                              
-                            </td>
-                          </td>
-                        </tr>
-                        <% end %>
+
                       </tbody>
                     </table>
                   </td>

@@ -16,7 +16,8 @@ class PostsController < ApplicationController
   
   # GET /posts/1 or /posts/1.json
   def show
-    @comments = Comment.all 
+    @comments = Comment.all
+    @users = User.all
   end
 
   # GET /posts/new
@@ -26,13 +27,16 @@ class PostsController < ApplicationController
   
   # PUT /posts/1/comment
   def comment
+      @post.numcomments += 1;
       @comment = @post.comments.create(content: params[:content], user_id: params[:user_id]) #supuestamente el id del post ya está asociado a comment
+      
       redirect_to (@post)
   end
 
   # GET /posts/1/edit
   def edit
   end
+  
 
   #Hauria de trobar la manera d'identificar si l'usuari actual ha donat like o no per quan tinguem un login
   #Em dona error de Nil class com si el que li passés de l'índex estigués buit

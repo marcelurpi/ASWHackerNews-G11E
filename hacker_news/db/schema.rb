@@ -20,6 +20,8 @@ ActiveRecord::Schema.define(version: 2021_11_12_230802) do
     t.datetime "updated_at", null: false
     t.integer "post_id"
     t.integer "user_id"
+    t.integer "commentable_id"
+    t.string "commentable_type"
     t.index ["post_id"], name: "index_comments_on_post_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
