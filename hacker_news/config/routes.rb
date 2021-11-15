@@ -20,6 +20,7 @@ Rails.application.routes.draw do
     resources :comments do
       post 'comment', on: :member and
       resources :comments 
+      resources :commentlikes
     end
     root 'posts#index'
 end
