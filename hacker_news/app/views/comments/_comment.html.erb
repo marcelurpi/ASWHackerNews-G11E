@@ -6,8 +6,13 @@
                     <tr>
                         <td valign="top" class="votelinks">
                             <center>
-                                <a id="up_29206911" onclick=""> <!-- VOTE -->
-                                    <div class="votearrow" title="vota"><%= link_to '_', comment_commentlikes_path(comment), method: :post %></div>
+                                <a id="up_29206911" onclick="" href=""> <!-- VOTE -->
+                                <% if cookies.signed[:user_id].nil? %>
+                                  <div class="votearrow" title="vota"><%= link_to "\u00A0\u00A0", login_path, method: :get, :style=> 'text-decoration: none;'  %></div>
+                                <% else %>
+                                  <div class="votearrow" title="vota"><%= link_to "\u00A0\u00A0", comment_commentlikes_path(comment), method: :post, :style=> 'text-decoration: none;'  %></div>
+                                <% end %>
+                                    
                                 </a>
                             </center>    
                         </td>

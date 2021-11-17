@@ -39,8 +39,13 @@
                   </td>
                   <td valign="top" class="votelinks">
                     <center>
-                      <div class="votearrow" title="vota"><%= link_to '_', post_likes_path(post), method: :post %></div> <!-- potser el post que li passem hauria de ser amb @ (pel que fa el tutorial)-->
-                      <!--<div class="votearrow" title="upvote">< %= link_to '_', like_post_path(post), method: :put %></div>-->
+                      <% if cookies.signed[:user_id].nil? %>
+                        <div class="votearrow" title="vota"><%= link_to "\u00A0\u00A0", login_path, method: :get %></div>
+                      <% else %>
+                        <div class="votearrow" title="vota"><%= link_to "\u00A0\u00A0", post_likes_path(post), method: :post %></div>
+                      <% end %>
+                      <!--<div class="votearrow" title="vota">< %= link_to "\u00A0\u00A0", post_likes_path(post), method: :post %></div> <!-- potser el post que li passem hauria de ser amb @ (pel que fa el tutorial)
+                      <div class="votearrow" title="upvote">< %= link_to '_', like_post_path(post), method: :put %></div>-->
                     </center>
                   </td>
                  <td class="title">
@@ -48,7 +53,7 @@
                     <a href="https://<%= post.url.gsub("https://", "").gsub("http://", "") %>"><%= post.title %></a>
                     <span class="sitebit comhead"> (<a href="https://<%= post.url.gsub("https://", "").gsub("http://", "").split('/').first %>"><span class="sitestr"><%= post.url.gsub("https://", "").gsub("http://", "").split('/').first %></span></a>)</span>
                     <% else %>
-                    <%= link_to "#{post.title}", post %>
+                    <%= link_to post.title, post, :style=> 'color:black;' %>
                     <% end %>
                   </td>
                 </tr>

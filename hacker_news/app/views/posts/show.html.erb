@@ -36,24 +36,28 @@
                     <td valign="top" class="votelinks">
                       <center>
                         <a id="up_29016506" href="CANVIAR"> <!-- link a upvote -->
-                          <div class="votearrow" title="upvote"></div>
+                          <% if cookies.signed[:user_id].nil? %>
+                            <div class="votearrow" title="vota"><%= link_to "\u00A0\u00A0", login_path, method: :get %></div>
+                          <% else %>
+                            <div class="votearrow" title="vota"><%= link_to "\u00A0\u00A0", post_likes_path(post), method: :post %></div>
+                          <% end %>
                         </a>
                       </center>
                     </td>
                     <td class="title">
-                      <a href="" class="titlelink"><%= @post.title %></a>
+                      <a href="" class="titlelink" style="color:black"><%= @post.title %></a>
                       <span class="sitebit comhead"> </span>
                     </td>
                   </tr>
                   <tr>
                     <td colspan="2"></td>
                     <td class="subtext">
-                      <span class="score" id="score_29016506"><%= @post.points %></span> 
+                      <span class="score" id="score_29016506"><%= @post.likes.count %> points</span> 
                         by <a href="" class="hnuser"><%= @post.author %></a> 
                       <span class="age" title="<%@post.created_at%>">
                         <a href="CANVIAR"><%= time_ago_in_words(@post.created_at)  %> ago</a></span> <!-- no entenc on se suposa que porta-->
                       <span id="unv_29016506">
-                        | <%= @post.comments.length() %>&nbsp;comments
+                        | <%= @post.comments.length() %>&nbsp;comments <% pre_like = @post.likes.find { |like| like.user_id == cookies.signed[:user_id]} %> <% if pre_like %> | <%= link_to 'unlike', post_like_path(@post, pre_like), method: :delete %><% end %>
                       </span> 
                            <!-- el link ha de portar a la pg actual -->              
                     </td></tr>

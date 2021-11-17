@@ -40,7 +40,11 @@
                   <td valign="top" class="votelinks">
                     <center>
                       <a id="up_28940860" onclick="" href="">
-                        <div class="votearrow" title="upvote"></div>
+                        <% if cookies.signed[:user_id].nil? %>
+                          <div class="votearrow" title="vota"><%= link_to "\u00A0\u00A0", login_path, method: :get %></div>
+                        <% else %>
+                          <div class="votearrow" title="vota"><%= link_to "\u00A0\u00A0", post_likes_path(post), method: :post %></div>
+                        <% end %>
                       </a>
                     </center>
                   </td>
@@ -49,17 +53,17 @@
                     <a href="https://<%= post.url.gsub("https://", "").gsub("http://", "") %>"><%= post.title %></a>
                     <span class="sitebit comhead"> (<a href="https://<%= post.url.gsub("https://", "").gsub("http://", "").split('/').first %>"><span class="sitestr"><%= post.url.gsub("https://", "").gsub("http://", "").split('/').first %></span></a>)</span>
                     <% else %>
-                    <%= link_to "#{post.title}", post %>
+                    <%= link_to "#{post.title}", post, :style=> 'color:black;' %>
                     <% end %>
                   </td>
                 </tr>
                 <tr>
                   <td colspan="2"></td>
                   <td class="subtext">
-                    <span class="score" id="score_28940860"><%= post.points %> points</span> 
+                    <span class="score" id="score_28940860"><%= post.likes.count %> points</span> 
                     by <a href="" class="hnuser"><%= post.author %></a> 
                     <span class="age" title="2021-10-21T05:57:57"><a href=""><%= time_ago_in_words(post.created_at)  %> ago</a></span> 
-                    <span id="unv_28940860"></span> | <a href="" onclick="">hide</a> | <a href=""><%= post.numcomments %> comments</a>
+                    <span id="unv_28940860"></span> | <a href="" onclick="">hide</a> | <% pre_like = post.likes.find { |like| like.user_id == cookies.signed[:user_id]} %> <% if pre_like %> <%= link_to 'unlike', post_like_path(post, pre_like), method: :delete %>  | <% end %><%= link_to "#{post.comments.length()} comments", post %></a>
                   </td>
                 </tr>
                 <tr class="spacer" style="height:5px"></tr>
