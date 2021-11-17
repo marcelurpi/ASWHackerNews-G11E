@@ -3,11 +3,13 @@ class PostsController < ApplicationController
 
   # GET /posts or /posts.json
   def index
-    @posts = Post.all.sort { |a, b| -a.points <=> -b.points }
-  end
-  
-  def newest
-    @posts = Post.all.sort { |a, b| -a.created_at.to_i <=> -b.created_at.to_i }
+    if !params[:ask].nil? && params[:ask]
+      @posts = Post.where(url: "")
+    elsif !params[:newest].nil? && params[:newest]
+      @posts = Post.all.sort { |a, b| -a.created_at.to_i <=> -b.created_at.to_i }
+    else
+      @posts = Post.all.sort { |a, b| -a.points <=> -b.points }
+    end
   end
   
   def ask
@@ -70,7 +72,7 @@ class PostsController < ApplicationController
     
     respond_to do |format|
       if @post.save
-        format.html { redirect_to "/posts/newest", notice: "Post was successfully created." }
+        format.html { redirect_to "/posts?newest=true", notice: "Post was successfully created." }
         format.json { head :no_content }
 =begin
       if @post.title != "" and @post.save         #contrubions tipus url o normal (titol amb url OR content)

@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     get 'posts/newest', to: 'posts#newest'
     get 'posts/ask', to: 'posts#ask'
     
+
     resources :submissions
     
     resources :posts do
