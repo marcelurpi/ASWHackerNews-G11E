@@ -1,8 +1,9 @@
-<body>
+
   <center>
     <table id="hnmain" border="0" cellpadding="0" cellspacing="0" width="85%" bgcolor="#f6f6ef">
         <tbody>
-          <tr><td bgcolor="#ff6600">
+          <tr>
+            <td bgcolor="#ff6600">
             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="padding:2px">
               <tbody>
                 <tr>
@@ -49,13 +50,13 @@
                     <td colspan="2"></td>
                     <td class="subtext">
                       <span class="score" id="score_29016506"><%= @post.points %></span> 
-                        by <a href="" class="hnuser"><%= @post.author %></a> 
+                        by <a href="<%= profile_login_path(:name => @post.author) %>" class="hnuser"><%= @post.author %></a> 
                       <span class="age" title="<%@post.created_at%>">
-                        <a href="CANVIAR"><%= time_ago_in_words(@post.created_at)  %> ago</a></span> <!-- no entenc on se suposa que porta-->
+                        <%= time_ago_in_words(@post.created_at)  %> ago
+                      </span> 
                       <span id="unv_29016506">
                         | <%= @post.comments.length() %>&nbsp;comments
                       </span> 
-                           <!-- el link ha de portar a la pg actual -->              
                     </td></tr>
                   <tr>
                     <td colspan="2"></td>
@@ -70,7 +71,7 @@
                         <% if cookies.signed[:user_id].nil? %> 
                           <a id="login" href="<%= login_path %>"></a>
                         <% else %>
-                          <%= hidden_field_tag :id_author, User.find(cookies.signed[:user_id]).name %>
+                          <%= hidden_field_tag :user_id, User.find(cookies.signed[:user_id]).name %>
                         <% end %>
                         
                         <!-- %= hidden_field_tag :user_id, 1 %--> 
@@ -87,12 +88,9 @@
                   <td>
                     <table border="0">
                       <tbody>
-                         <%= logger.debug "ara fem render de comments" %>
                         <ul>
                           <%= render partial: 'comments/comment', collection: @post.comments %>
                         </ul>  
-                        
-
                       </tbody>
                     </table>
                   </td>
@@ -101,7 +99,7 @@
             </table>
           </table>
         </center>
-      </body>
+      
                 
               
 
