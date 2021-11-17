@@ -26,8 +26,7 @@ class CommentsController < ApplicationController
     
     @child = @commentable.comments.create(content: params[:content], user_id: params[:user_id])
     
-    redirect_to (@child)
-      
+    redirect_to (@commentable)
   end
   
   
