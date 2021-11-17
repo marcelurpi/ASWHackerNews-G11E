@@ -42,30 +42,13 @@
                     <%=f.hidden_field :commentable_id, value: @comment.id %>
                     <%=f.hidden_field :commentable_type, value: "Comment" %>
                     <% if cookies.signed[:user_id].nil? %> 
-                        <a id="login" href="<%= login_path %>"></a>
+                      <%= controller.redirect_to(login_path) %>
                     <% else %>
-                        <%= hidden_field_tag :id_author, User.find(cookies.signed[:user_id]).name %>
+                      <%= f.hidden_field :user_id, value: User.find(cookies.signed[:user_id]).name %>
                     <% end %>
-                    <%=f.text_area :content, placeholder: "Add a Reply" %><br/>
+                    <%=f.text_area :content, placeholder: "Add a Reply", rows: 6, cols: 60%><br/>
                     <%=f.submit "Reply"  %>
                 <% end %>
-                  
-                <form method="post" action="<%= comment_comment_path(@comment) %>">
-                    <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
-                     
-                    <% if cookies.signed[:user_id].nil? %> 
-                        <a id="login" href="<%= login_path %>"></a>
-                    <% else %>
-                        <%= hidden_field_tag :id_author, User.find(cookies.signed[:user_id]).name %>
-                    <% end %>
-                    
-                    <!-- %= hidden_field_tag :user_id, 1 %--> 
-                    <%= hidden_field_tag :parent, @comment.comment_id %>
-                    <textarea name="content" rows="6" cols="60"></textarea>
-                    <br><br>
-                    <input type="submit" value="add comment">
-                </form>
-                
             </td>
         </tr>
     </tbody>
