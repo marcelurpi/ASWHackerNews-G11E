@@ -1,0 +1,69 @@
+
+            <table class="fatitem" border="0">
+                <tbody>
+                  <tr class="athing" id="29016506">
+                    <td align="right" valign="top" class="title">
+                      <span class="rank"></span>
+                    </td>      
+                    <td valign="top" class="votelinks">
+                      <center>
+                        <a id="up_29016506" href="CANVIAR"> <!-- link a upvote -->
+                          <div class="votearrow" title="upvote"></div>
+                        </a>
+                      </center>
+                    </td>
+                    <td class="title">
+                      <a href="" class="titlelink"><%= @post.title %></a>
+                      <span class="sitebit comhead"> </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="2"></td>
+                    <td class="subtext">
+                      <span class="score" id="score_29016506"><%= @post.points %></span> 
+                        by <a href="<%= profile_login_path(:name => @post.author) %>" class="hnuser"><%= @post.author %></a> 
+                      <span class="age" title="<%@post.created_at%>">
+                        <%= time_ago_in_words(@post.created_at)  %> ago
+                      </span> 
+                      <span id="unv_29016506">
+                        | <%= @post.comments.length() %>&nbsp;comments
+                      </span> 
+                    </td></tr>
+                  <tr>
+                    <td colspan="2"></td>
+                    <td><%= @post.content %></td>
+                  </tr>
+                  <tr>
+                    <td colspan="2"></td>
+                    <td>
+                    <form method="post" action="<%= comment_post_path(@post) %>">
+                      <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
+                         
+                        <% if cookies.signed[:user_id].nil? %> 
+                          <a id="login" href="<%= login_path %>"></a>
+                        <% else %>
+                          <%= hidden_field_tag :user_id, User.find(cookies.signed[:user_id]).name %>
+                        <% end %>
+                        <%= hidden_field_tag :parent, @post.id_post %>
+                        <textarea name="content" rows="6" cols="60"></textarea>
+                        <br><br>
+                        <input type="submit" value="add comment">
+                      </form>
+                    </td></tr></table>
+            <br>
+            <table border="0" class="comment-tree">
+              <tbody>
+                <tr class="comment" id="CANVIAR"> 
+                  <td>
+                    <table border="0">
+                      <tbody>
+                        <ul>
+                          <%= render partial: 'comments/comment', collection: @post.comments %>
+                        </ul>  
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+      
