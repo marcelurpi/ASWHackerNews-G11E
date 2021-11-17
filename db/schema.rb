@@ -10,16 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_17_142436) do
-
-  create_table "commentlikes", force: :cascade do |t|
-    t.integer "comment_id"
-    t.integer "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["comment_id"], name: "index_commentlikes_on_comment_id"
-    t.index ["user_id"], name: "index_commentlikes_on_user_id"
-  end
+ActiveRecord::Schema.define(version: 2021_11_11_121529) do
 
   create_table "comments", force: :cascade do |t|
     t.integer "comment_id"
@@ -28,20 +19,9 @@ ActiveRecord::Schema.define(version: 2021_11_17_142436) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "post_id"
-    t.string "user_id"
-    t.integer "commentable_id"
-    t.string "commentable_type"
+    t.integer "user_id"
     t.index ["post_id"], name: "index_comments_on_post_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
-  end
-
-  create_table "likes", force: :cascade do |t|
-    t.integer "post_id"
-    t.integer "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["post_id"], name: "index_likes_on_post_id"
-    t.index ["user_id"], name: "index_likes_on_user_id"
   end
 
   create_table "posts", force: :cascade do |t|
