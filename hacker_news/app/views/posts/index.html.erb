@@ -1,3 +1,4 @@
+
 <table border="0" cellpadding="0" cellspacing="0" class="itemlist">
   <tbody>
     <% @posts.each_with_index do |post, index| %>
@@ -7,7 +8,13 @@
         </td>
         <td valign="top" class="votelinks">
           <center>
-            <div class="votearrow" title="upvote"><%= link_to '_', like_post_path(post), method: :put %></div>
+            <% if cookies.signed[:user_id].nil? %>
+              <div class="votearrow" title="vota"><%= link_to "\u00A0\u00A0", login_path, method: :get %></div>
+            <% else %>
+              <div class="votearrow" title="vota"><%= link_to "\u00A0\u00A0", post_likes_path(post), method: :post %></div>
+            <% end %>
+            <!--<div class="votearrow" title="vota">< %= link_to "\u00A0\u00A0", post_likes_path(post), method: :post %></div> <!-- potser el post que li passem hauria de ser amb @ (pel que fa el tutorial)
+            <div class="votearrow" title="upvote">< %= link_to '_', like_post_path(post), method: :put %></div>-->
           </center>
         </td>
        <td class="title">
@@ -15,17 +22,19 @@
           <a href="https://<%= post.url.gsub("https://", "").gsub("http://", "") %>"><%= post.title %></a>
           <span class="sitebit comhead"> (<a href="https://<%= post.url.gsub("https://", "").gsub("http://", "").split('/').first %>"><span class="sitestr"><%= post.url.gsub("https://", "").gsub("http://", "").split('/').first %></span></a>)</span>
           <% else %>
-          <%= link_to "#{post.title}", post %>
+          <%= link_to post.title, post, :style=> 'color:black;' %>
           <% end %>
         </td>
       </tr>
       <tr>
         <td colspan="2"></td>
         <td class="subtext">
-          <span class="score" id="score"><%= post.points %> points</span> 
+          <span class="score" id="score"><%= post.likes.count %> points</span>
+          <!--<span class="score" id="score">< %= post.points %> points</span>-->
           by <a href="<%= profile_login_path(:name => post.author) %>" class="hnuser"><%= post.author %></a> 
-          <span class="age" title="time_ago"><%= time_ago_in_words(post.created_at)  %> ago</span> 
-          <span id="unv_28940860"></span> | <a href="" onclick="">hide</a> | <%= link_to 'unlike', unlike_post_path(post), method: :put %> | <%= link_to 'Show ' + post.numcomments.to_s + ' comments', post %></a>
+          <span class="age" title="time_ago"><a href=""><%= time_ago_in_words(post.created_at)  %> ago </a></span> 
+          <span id="unv_28940860"></span> | <a href="" onclick="">hide</a> | <% pre_like = post.likes.find { |like| like.user_id == cookies.signed[:user_id]} %> <% if pre_like %> <%= link_to 'unlike', post_like_path(post, pre_like), method: :delete %>  | <% end %><%= link_to "#{post.comments.length()} comments", post %></a>
+          <!--<span id="unv_28940860"></span> | <a href="" onclick="">hide</a> | < %= link_to 'unlike', unlike_post_path(post), method: :put %> | < %= link_to 'Show', post %> < %= post.numcomments %> comments</a>-->
         </td>
       </tr>
       <tr class="spacer" style="height:5px"></tr>

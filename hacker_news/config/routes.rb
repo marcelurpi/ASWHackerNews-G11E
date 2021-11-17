@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  get 'ask/index'
+    get 'ask/index'
     get 'login', to: 'login#new'
     get 'login/profile', to: 'login#profile', as: :profile_login
     post 'login/profile', to: 'login#update', as: :update_login
@@ -7,9 +7,16 @@ Rails.application.routes.draw do
     get 'login/delete', to: 'login#delete', as: :delete_login
     resources :submissions
     resources :posts do
+      resources :likes and
       put 'like', on: :member and
       put 'unlike', on: :member and
-      post 'comment', on: :member
+      post 'comment', on: :member and
+      resources :comments
+    end
+    resources :comments do
+      post 'comment', on: :member and
+      resources :comments 
+      resources :commentlikes
     end
     root 'posts#index'
 end
