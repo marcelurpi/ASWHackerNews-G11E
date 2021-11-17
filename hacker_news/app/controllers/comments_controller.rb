@@ -1,6 +1,5 @@
 class CommentsController < ApplicationController
   before_action :find_commentable, :set_comment, only: [:show, :update, :destroy, :comment]
-  before_action :set_comment, only: [:show, :update, :destroy]
 
   # GET /comments
   # GET /comments.json
@@ -24,12 +23,18 @@ class CommentsController < ApplicationController
   
   # PUT /posts/1/comment
   def comment
-    
-    @child = @commentable.comments.create(content: params[:content], user_id: params[:user_id])
-    
-    redirect_to (@child)
+    if cookies.signed[:user_id].nil?
+      redirect_to(login_path)
       
+    else
+    
+      @child = @commentable.comments.create(content: params[:content], user_id: params[:user_id])
+    
+      redirect_to (@commentable)
+    end
   end
+  
+  
 
   # POST /comments
   # POST /comments.json
@@ -46,7 +51,7 @@ class CommentsController < ApplicationController
       end
     end
   end
-
+  
   # DELETE /comments/1
   # DELETE /comments/1.json
   def destroy
@@ -56,7 +61,7 @@ class CommentsController < ApplicationController
       format.json { head :no_content }
     end
   end
-
+  
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_comment

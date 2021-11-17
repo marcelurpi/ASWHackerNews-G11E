@@ -8,7 +8,7 @@ class LikesController < ApplicationController
     else
       @post.likes.create(user_id: cookies.signed[:user_id])
     end
-    redirect_to session.delete(:return_to)
+    redirect_to posts_path
   end
   
   def destroy
@@ -17,7 +17,7 @@ class LikesController < ApplicationController
     else
       @like.destroy
     end
-    redirect_to session.delete(:return_to)
+    redirect_to posts_path
   end
   
   def find_like
@@ -31,7 +31,6 @@ class LikesController < ApplicationController
   end
 
   def find_post
-    session[:return_to] ||= request.referer
     @post = Post.find(params[:post_id])
   end
 

@@ -19,16 +19,13 @@
                         <td class="default">
                             <div style="margin-top:2px; margin-bottom:-10px;">
                                 <span class="comhead">
-                                    <a href="user?id=numair" class="hnuser"><%= comment.user_id%></a> <!-- LINK A USER -->
+                                    <a href="<%= profile_login_path(:name => comment.user_id) %>" class="hnuser"><%= comment.user_id%></a> <!-- LINK A USER -->
                                     <span class="age" title="2021-11-13T02:41:20">
                                         <%= time_ago_in_words(comment.created_at)  %> ago
                                     </span> 
-                                    <span id="unv_29206911"></span>
-                                    <span class="navs"> 
-                                        | <a href="#29206945" aria-hidden="true">next</a>
-                                    </span> 
-                                    <a class="togg" n="75" href="javascript:void(0)" onclick="return toggle(event, 29206911)">[–]</a>
-                                    <span><%= comment.commentlikes.count %> points</span>
+                                    <span>
+                                        | <%= comment.commentlikes.count %> points
+                                    </span>
                                     
                                     <% pre_commentlike = comment.commentlikes.find { |commentlike| commentlike.user_id == cookies.signed[:user_id]} %> <% if pre_commentlike %> <%= link_to 'unlike', comment_commentlike_path(comment, pre_commentlike), method: :delete %> <% end %>
                                     

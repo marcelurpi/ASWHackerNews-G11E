@@ -25,7 +25,7 @@
                     <td colspan="2"></td>
                     <td class="subtext">
                       <span class="score" id="score_29016506"><%= @post.likes.count %> points</span> 
-                        by <a href="" class="hnuser"><%= @post.author %></a> 
+                        by <a href="<%= profile_login_path(:name => @post.author) %>" class="hnuser"><%= @post.author %></a> 
                       <span class="age" title="<%@post.created_at%>">
                         <a href="CANVIAR"><%= time_ago_in_words(@post.created_at)  %> ago</a></span> <!-- no entenc on se suposa que porta-->
                       <span id="unv_29016506">
@@ -46,10 +46,8 @@
                         <% if cookies.signed[:user_id].nil? %> 
                           <a id="login" href="<%= login_path %>"></a>
                         <% else %>
-                          <%= hidden_field_tag :id_author, User.find(cookies.signed[:user_id]).name %>
+                          <%= hidden_field_tag :user_id, User.find(cookies.signed[:user_id]).name %>
                         <% end %>
-                        
-                        <!-- %= hidden_field_tag :user_id, 1 %--> 
                         <%= hidden_field_tag :parent, @post.id_post %>
                         <textarea name="content" rows="6" cols="60"></textarea>
                         <br><br>
@@ -63,14 +61,13 @@
                   <td>
                     <table border="0">
                       <tbody>
-                         <%= logger.debug "ara fem render de comments" %>
                         <ul>
                           <%= render partial: 'comments/comment', collection: @post.comments %>
                         </ul>  
-                        
-
                       </tbody>
                     </table>
-                
-              
-
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+      
