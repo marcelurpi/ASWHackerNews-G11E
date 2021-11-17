@@ -1,0 +1,83 @@
+<body>
+    <center>
+        <table id="hnmain" border="0" cellpadding="0" cellspacing="0" width="85%" bgcolor="#f6f6ef">
+            <tbody>
+                <tr>
+                    <td bgcolor="#ff6600">
+                        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="padding:2px">
+                            <tbody>
+                                <tr>
+                                    <td style="width:18px;padding-right:4px">
+                                        <a href="<%= posts_path %>"><img src="https://news.ycombinator.com/y18.gif" width="18" height="18" style="border:1px white solid;"></a>
+                                    </td>
+                                    <td style="line-height:12pt; height:10px;">
+                                        <span class="pagetop"><b>Add Comment</b></span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr id="pagespace" title="Add Comment" style="height:10px"></tr>
+                <tr>
+                    <td>
+                        <table class="fatitem" border="0">
+                            <tbody>
+                                <tr class="athing" id="29201335">    
+                                    <td class="ind"></td>
+                                    <td valign="top" class="votelinks">
+                                        <center>
+                                            <a id="up_29201335" onclick="CANVIAR A LIKE">
+                                                <div class="votearrow" title="upvote"></div>
+                                            </a>
+                                        </center>    
+                                    </td>
+                                    <td class="default">
+                                        <div style="margin-top:2px; margin-bottom:-10px;">
+                                            <span class="comhead">
+                                                <a href="CANVIAR" class="hnuser"> <%= @comment.user_id %> </a> 
+                                                <span class="age" title="2021-11-12T16:45:17">
+                                                    <%= time_ago_in_words(@comment.created_at) %> ago
+                                                </span> 
+                                                <span id="unv_29201335"></span>
+                                                <span class="navs"> 
+                                                    | <a href="CANVIAR">parent</a> 
+                                                </span>
+                                                <span class="onstory"> 
+                                                    |  on: <a href="CANVIAR">POST TITLE</a>
+                                                </span>                  
+                                            </span>
+                                        </div>
+                                        <br>
+                                        <div class="comment">
+                                            <span class="commtext c00"> 
+                                                <%= @comment.content %>
+                                                <div class="reply"></div>
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="height:10px"></tr>
+                                <tr>
+                                    <td colspan="2"></td>
+                                    <td>
+                                        <%= form_for [@comment, Comment.new] do |f| %>
+                                            <%=f.hidden_field :commentable_id, value: @comment.id %>
+                                            <%=f.hidden_field :commentable_type, value: "Comment" %>
+                                            <% if cookies.signed[:user_id].nil? %> 
+                                              <%= controller.redirect_to(login_path) %>
+                                            <% else %>
+                                              <%= f.hidden_field :user_id, value: User.find(cookies.signed[:user_id]).name %>
+                                            <% end %>
+                                            <%=f.text_area :content, placeholder: "Add a Reply", rows: 6, cols: 60%><br/>
+                                            <%=f.submit "Reply"  %>
+                                        <% end %>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </center>
+</body>
