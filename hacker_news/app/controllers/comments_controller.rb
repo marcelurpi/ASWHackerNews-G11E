@@ -23,10 +23,15 @@ class CommentsController < ApplicationController
   
   # PUT /posts/1/comment
   def comment
+    if cookies.signed[:user_id].nil?
+      redirect_to(login_path)
+      
+    else
     
-    @child = @commentable.comments.create(content: params[:content], user_id: params[:user_id])
+      @child = @commentable.comments.create(content: params[:content], user_id: params[:user_id])
     
-    redirect_to (@commentable)
+      redirect_to (@commentable)
+    end
   end
   
   
