@@ -24,7 +24,7 @@
                     </span>
                   </td>
               </tr></tbody></table></td></tr>
-              <%= logger.debug "Header fins aqui" %>
+         
         <tr id="pagespace" title=#{post.title} style="height:10px"></tr>
         <tr>
           <td>
@@ -73,8 +73,6 @@
                         <% else %>
                           <%= hidden_field_tag :user_id, User.find(cookies.signed[:user_id]).name %>
                         <% end %>
-                        
-                        <!-- %= hidden_field_tag :user_id, 1 %--> 
                         <%= hidden_field_tag :parent, @post.id_post %>
                         <textarea name="content" rows="6" cols="60"></textarea>
                         <br><br>
