@@ -25,6 +25,9 @@ class PostsController < ApplicationController
   # GET /posts/new
   def new
     @post = Post.new
+    if cookies.signed[:user_id].nil?
+      redirect_to(login_path)
+    end
   end
   
   # PUT /posts/1/comment
@@ -68,30 +71,29 @@ class PostsController < ApplicationController
   # POST /posts or /posts.json
   def create
     @post = Post.new(post_params)
-    
-    respond_to do |format|
-      if @post.save
-        format.html { redirect_to "/posts?newest=true", notice: "Post was successfully created." }
-        format.json { head :no_content }
-=begin
-      if @post.title != "" and @post.save         #contrubions tipus url o normal (titol amb url OR content)
-        if (@post.url == "" and @post.content != "") or (@post.content == "" and @post.url != "")
-          format.html { redirect_to "/posts/newest", notice: "Post was successfully created." }
+    if !Post.find_by(url: @post.url).nil?
+      redirect_to(Post.find_by(url: @post.url))
+    else
+      
+      
+      content = nil
+      if !@post.url.nil? && !@post.url.empty? && !@post.content.nil? && !@post.content.empty?
+        content = @post.content
+        @post.content = ""
+      end
+      respond_to do |format|
+        if @post.save
+          if !content.nil?
+            @post.numcomments += 1;
+            author_id = User.find_by(name: @post.author).id
+            @comment = @post.comments.create(content: content, user_id: author_id, post_id: @post.id)
+          end
+          format.html { redirect_to "/posts?newest=true", notice: "Post was successfully created." }
           format.json { head :no_content }
         else
           format.html { render :new, status: :unprocessable_entity }
           format.json { render json: @post.errors, status: :unprocessable_entity }
-
-      elsif @post.title == "" and @post.save and @post.url == "" and @post.content == ""          #tipus ask
-        #falta implementar :
-        # Publicació de noves Contribucions de tipus "ask". Fixeu-vos que si s'omplen alhora els camps "url" i "text", 
-        #si l"url" és correcte i no existeix, es crea una nova Contribució per a aquell "url" i un nou comentari 
-        #associat a aquesta Contribució amb el contingut del camp "text". L'autor del comentari és, òbviament, el mateix que 
-        #ha creat la Contribució
-=end
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @post.errors, status: :unprocessable_entity }
+        end
       end
     end
   end

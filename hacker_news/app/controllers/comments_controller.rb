@@ -22,10 +22,9 @@ class CommentsController < ApplicationController
   end
   
   def threads
-    if params[:user_id]
-      @comments = Comment.where(user_id: params[:user_id])
+    if cookies.signed[:user_id].nil?
+      redirect_to(login_path)
     else
-      # @comments = Comment.where(user_id: User.find(cookies.signed[:user_id]).google_id)
       @comments = Comment.where(user_id: cookies.signed[:user_id])
     end
   end
@@ -36,7 +35,6 @@ class CommentsController < ApplicationController
       redirect_to(login_path)
       
     else
-    
       @child = @commentable.comments.create(content: params[:content], user_id: params[:user_id])
     
       redirect_to (@commentable)
@@ -49,6 +47,9 @@ class CommentsController < ApplicationController
   # POST /comments.json
   def create
     @comment = Comment.new(comment_params)
+    if @comment.commentable_type == 'Comment'
+      @comment.post_id = Comment.find(@comment.commentable_id).post_id
+    end
 
     respond_to do |format|
       if @comment.save
