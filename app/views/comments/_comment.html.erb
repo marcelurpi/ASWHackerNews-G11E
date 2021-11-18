@@ -19,7 +19,7 @@
                         <td class="default">
                             <div style="margin-top:2px; margin-bottom:-10px;">
                                 <span class="comhead">
-                                    <a href="<%= profile_login_path(:name => comment.user_id) %>" class="hnuser"><%= comment.user_id%></a> <!-- LINK A USER -->
+                                    <a href="<%= profile_login_path(:name => User.find(comment.user_id).name) %>" class="hnuser"><%= User.find(comment.user_id).name %></a> <!-- LINK A USER -->
                                     <span class="age" title="2021-11-13T02:41:20">
                                         <%= time_ago_in_words(comment.created_at)  %> ago
                                     </span> 
@@ -27,7 +27,10 @@
                                         | <%= comment.commentlikes.count %> points
                                     </span>
                                     
-                                    <% pre_commentlike = comment.commentlikes.find { |commentlike| commentlike.user_id == cookies.signed[:user_id]} %> <% if pre_commentlike %> <%= link_to 'unlike', comment_commentlike_path(comment, pre_commentlike), method: :delete %> <% end %>
+                                    <% pre_commentlike = comment.commentlikes.find { |commentlike| commentlike.user_id == cookies.signed[:user_id]} %>
+                                    <% if pre_commentlike %>
+                                        | <%= link_to 'unlike', comment_commentlike_path(comment, pre_commentlike), method: :delete %>
+                                    <% end %>
                                     
                                     
                                     <span class="onstory"></span>                  
