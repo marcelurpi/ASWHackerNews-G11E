@@ -46,9 +46,9 @@
                         <% if cookies.signed[:user_id].nil? %> 
                           <a id="login" href="<%= login_path %>"></a>
                         <% else %>
-                          <%= hidden_field_tag :user_id, User.find(cookies.signed[:user_id]).name %>
+                          <%= hidden_field_tag :user_id, User.find(cookies.signed[:user_id]).id %>
                         <% end %>
-                        <%= hidden_field_tag :parent, @post.id_post %>
+                        <%= hidden_field_tag :post_id, @post.id %>
                         <textarea name="content" rows="6" cols="60"></textarea>
                         <br><br>
                         <input type="submit" value="add comment">
