@@ -31,8 +31,8 @@
           <span class="score" id="score"><%= post.likes.count %> points</span>
           <!--<span class="score" id="score">< %= post.points %> points</span>-->
           by <a href="<%= profile_login_path(:name => post.author) %>" class="hnuser"><%= post.author %></a> 
-          <span class="age" title="time_ago"><a href=""><%= time_ago_in_words(post.created_at)  %> ago </a></span> 
-          <span id="unv_28940860"></span> | <a href="" onclick="">hide</a> | <% pre_like = post.likes.find { |like| like.user_id == cookies.signed[:user_id]} %> <% if pre_like %> <%= link_to 'unlike', post_like_path(post, pre_like), method: :delete %>  | <% end %><%= link_to "#{post.comments.length()} comments", post %></a>
+          <span class="age" title="time_ago"><%= time_ago_in_words(post.created_at)  %> ago</span> 
+          <span id="unv_28940860"></span> | <% pre_like = post.likes.find { |like| like.user_id == cookies.signed[:user_id]} %> <% if pre_like %> <%= link_to 'unlike', post_like_path(post, pre_like), method: :delete %>  | <% end %><%= link_to "#{post.comments.length()} comments", post %></a>
           <!--<span id="unv_28940860"></span> | <a href="" onclick="">hide</a> | < %= link_to 'unlike', unlike_post_path(post), method: :put %> | < %= link_to 'Show', post %> < %= post.numcomments %> comments</a>-->
         </td>
       </tr>
