@@ -10,7 +10,13 @@
                                 <% if cookies.signed[:user_id].nil? %>
                                   <div class="votearrow" title="vota"><%= link_to "\u00A0\u00A0", login_path, method: :get, :style=> 'text-decoration: none;'  %></div>
                                 <% else %>
-                                  <div class="votearrow" title="vota"><%= link_to "\u00A0\u00A0", comment_commentlikes_path(comment), method: :post, :style=> 'text-decoration: none;'  %></div>
+                                    <% pre_like = comment.commentlikes.find { |commentlike| commentlike.user_id == cookies.signed[:user_id]} %> 
+                                    <% if pre_like %>
+                                        <div class="voterrow" title="vota" style="width: 14px; height:19px;"></div>
+                                    <% else %>
+                                        <div class="votearrow" title="vota"><%= link_to "\u00A0\u00A0", comment_commentlikes_path(comment), method: :post, :style=> 'text-decoration: none;'  %></div>
+                                    <% end %>
+                                  
                                 <% end %>
                                     
                                 </a>
@@ -37,7 +43,7 @@
                                 </span>
                             </div>
                             <br>
-                            <div class="comment">
+                            <div class="comment" style="color:black">
                                 <%= comment.content %>
                                 <span class="commtext c00">
                                     <div class="reply">        
