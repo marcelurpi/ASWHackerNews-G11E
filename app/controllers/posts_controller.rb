@@ -18,7 +18,8 @@ class PostsController < ApplicationController
   
   # GET /posts/1 or /posts/1.json
   def show
-    @comments = Comment.all 
+    @comments = Comment.all
+    @users = User.all
   end
 
   # GET /posts/new
@@ -28,8 +29,15 @@ class PostsController < ApplicationController
   
   # PUT /posts/1/comment
   def comment
-      @comment = @post.comments.create(content: params[:content], user_id: params[:user_id]) #supuestamente el id del post ya está asociado a comment
+    if cookies.signed[:user_id].nil?
+      redirect_to(login_path)
+    
+    else
+      @post.numcomments += 1;
+      @comment = @post.comments.create(content: params[:content], user_id: params[:user_id], post_id: params[:post_id]) #supuestamente el id del post ya está asociado a comment
+      
       redirect_to (@post)
+    end
   end
 
   # GET /posts/1/edit
