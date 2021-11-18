@@ -21,6 +21,15 @@ class CommentsController < ApplicationController
   def edit
   end
   
+  def threads
+    if params[:user_id]
+      @comments = Comment.where(user_id: params[:user_id])
+    else
+      # @comments = Comment.where(user_id: User.find(cookies.signed[:user_id]).google_id)
+      @comments = Comment.where(user_id: cookies.signed[:user_id])
+    end
+  end
+
   # PUT /posts/1/comment
   def comment
     if cookies.signed[:user_id].nil?
@@ -39,6 +48,10 @@ class CommentsController < ApplicationController
   # POST /comments
   # POST /comments.json
   def create
+    p 'Paramsssssssss'
+    p comment_params
+    p 'Endddddddddddd'
+    
     @comment = Comment.new(comment_params)
 
     respond_to do |format|
@@ -51,7 +64,7 @@ class CommentsController < ApplicationController
       end
     end
   end
-  
+
   # DELETE /comments/1
   # DELETE /comments/1.json
   def destroy
@@ -61,7 +74,7 @@ class CommentsController < ApplicationController
       format.json { head :no_content }
     end
   end
-  
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_comment

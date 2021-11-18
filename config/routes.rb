@@ -5,6 +5,8 @@ Rails.application.routes.draw do
     post 'login/profile', to: 'login#update', as: :update_login
     get 'login/create', to: 'login#create', as: :create_login
     get 'login/delete', to: 'login#delete', as: :delete_login
+    get 'threads' => 'comments#threads'
+      
     resources :submissions
     resources :posts do
       resources :likes and
@@ -13,6 +15,7 @@ Rails.application.routes.draw do
       post 'comment', on: :member and
       resources :comments
     end
+    
     resources :comments do
       post 'comment', on: :member and
       resources :comments 

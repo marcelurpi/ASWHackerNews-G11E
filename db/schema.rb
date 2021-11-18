@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_15_153734) do
+ActiveRecord::Schema.define(version: 2021_11_17_142436) do
 
   create_table "commentlikes", force: :cascade do |t|
     t.integer "comment_id"
@@ -28,7 +28,7 @@ ActiveRecord::Schema.define(version: 2021_11_15_153734) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "post_id"
-    t.string "user_id"
+    t.integer "user_id"
     t.integer "commentable_id"
     t.string "commentable_type"
     t.index ["post_id"], name: "index_comments_on_post_id"
