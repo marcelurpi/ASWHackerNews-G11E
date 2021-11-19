@@ -9,5 +9,9 @@ Integrants del grup:
 - Tatiana Meyer [@teyteymey](https://github.com/teyteymey)
  
  
- Taiga del projecte:
- https://tree.taiga.io/project/claraestruch-aws-lab-grup-g11e/timeline
+Taiga del projecte:
+- https://tree.taiga.io/project/claraestruch-aws-lab-grup-g11e/timeline
+
+
+Aplicació a Heroku:
+- https://aswhackernewsg11e.herokuapp.com/
