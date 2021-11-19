@@ -7,3 +7,7 @@ Integrants del grup:
 - Clara Estruch [@clara0201](https://github.com/clara0201)
 - Marcel Urpí [@marcelurpi](https://github.com/marcelurpi)
 - Tatiana Meyer [@teyteymey](https://github.com/teyteymey)
+ 
+ 
+ Taiga del projecte:
+ https://tree.taiga.io/project/claraestruch-aws-lab-grup-g11e/timeline
