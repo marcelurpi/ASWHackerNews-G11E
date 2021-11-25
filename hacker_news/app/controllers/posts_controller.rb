@@ -36,10 +36,11 @@ class PostsController < ApplicationController
       redirect_to(login_path)
     
     else
-      @post.numcomments += 1;
-      @comment = @post.comments.create(content: params[:content], user_id: params[:user_id], post_id: params[:post_id]) #supuestamente el id del post ya está asociado a comment
-      
-      redirect_to (@post)
+      if !params[:content].nil? && !params[:content].blank?
+        @post.numcomments += 1;
+        @comment = @post.comments.create(content: params[:content], user_id: params[:user_id], post_id: params[:post_id]) #supuestamente el id del post ya está asociado a comment
+        redirect_to @post
+      end
     end
   end
 
