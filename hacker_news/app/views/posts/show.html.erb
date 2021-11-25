@@ -25,7 +25,7 @@
                     <td colspan="2"></td>
                     <td class="subtext">
                       <span class="score" id="score_29016506"><%= @post.likes.count %> points</span> 
-                        by <a href="<%= profile_login_path(:name => @post.author) %>" class="hnuser"><%= @post.author %></a> 
+                       by <a href="<%= profile_login_path(:name => @post.author_id) %>" class="hnuser"><%= @post.author_id %></a> 
                       <span class="age" title="<%@post.created_at%>">
                         <a href="CANVIAR"><%= time_ago_in_words(@post.created_at)  %> ago</a></span> <!-- no entenc on se suposa que porta-->
                       <span id="unv_29016506">

@@ -3,7 +3,7 @@
   <%= hidden_field_tag :created_at, DateTime.now() %>
   <%= hidden_field_tag :updated_at, DateTime.now() %>
   <%= hidden_field_tag :id_post, Time.now.to_i %>
-  <%= hidden_field_tag :author, User.find(cookies.signed[:user_id]).name %>
+  <%= hidden_field_tag :author_id, cookies.signed[:user_id] %>
   <table border="0">
     <tr>
       <td>title</td>
