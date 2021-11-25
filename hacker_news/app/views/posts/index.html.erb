@@ -9,6 +9,8 @@
           <center>
             <% if cookies.signed[:user_id].nil? %>
               <div class="votearrow" title="vota"><%= link_to "\u00A0\u00A0", login_path, method: :get %></div>
+            <% elsif User.find(cookies.signed[:user_id]).id == post.author_id %>
+                <div><font color="#ff6600">*</font></div>
             <% else %>
               <% pre_like = post.likes.find { |like| like.user_id == cookies.signed[:user_id]} %> 
               <% if pre_like %>
