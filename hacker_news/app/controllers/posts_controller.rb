@@ -4,9 +4,16 @@ class PostsController < ApplicationController
   # GET /posts or /posts.json
   def index
     if !params[:ask].nil? && params[:ask]
-      @posts = Post.where(url: "")
+      @posts = Post.where(url: "").sort { |a, b| -a.points <=> -b.points }
     elsif !params[:newest].nil? && params[:newest]
       @posts = Post.all.sort { |a, b| -a.created_at.to_i <=> -b.created_at.to_i }
+    elsif !params[:user].nil?
+      user = User.find_by(name: params[:user])
+      @posts = Post.where(author: user.name).sort { |a, b| -a.points <=> -b.points }
+    elsif !params[:upvoted_by].nil?
+      user = User.find_by(name: params[:upvoted_by])
+      likedPostIds = Like.where(user_id: user.id).select(:post_id).to_a.map{|l| l.post_id}
+      @posts = Post.where(id: likedPostIds).sort { |a, b| -a.points <=> -b.points }
     else
       @posts = Post.all.sort { |a, b| -a.points <=> -b.points }
     end

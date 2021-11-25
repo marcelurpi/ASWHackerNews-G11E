@@ -15,7 +15,7 @@
                         <td class="default">
                            <div style="margin-top:2px; margin-bottom:-10px;"><span class="comhead">
                               <span class="score" id="score"><%= comment.commentlikes.count %> points</span> 
-                              by <a class="hnuser" href="<%= profile_login_path(:name => User.find(cookies.signed[:user_id]).name) %>"><%= User.find(cookies.signed[:user_id]).name %></a> 
+                              by <a class="hnuser" href="<%= profile_login_path(:name => User.find(comment.user_id).name) %>"><%= User.find(comment.user_id).name %></a> 
                               <span class="age" title="time"><%= time_ago_in_words(comment.created_at)  %> ago</span>
                               <span class="onstory">|  on: <a href= "<%= post_path(comment.post_id) %>"><%= Post.find(comment.post_id).title %></a></span>
                            </div>

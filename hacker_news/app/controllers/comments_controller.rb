@@ -5,6 +5,20 @@ class CommentsController < ApplicationController
   # GET /comments.json
   def index
     @comments = Comment.all
+    if !params[:threads].nil? && params[:threads]
+      if cookies.signed[:user_id].nil?
+        redirect_to(login_path)
+      else
+        @comments = Comment.where(user_id: cookies.signed[:user_id])
+      end
+    elsif !params[:user].nil?
+      user = User.find_by(name: params[:user])
+      @comments = Comment.where(user_id: user.id)
+    elsif !params[:upvoted_by].nil?
+      user = User.find_by(name: params[:upvoted_by])
+      likedCommentIds = Commentlike.where(user_id: user.id).select(:comment_id).to_a.map{|c| c.comment_id}
+      @comments = Comment.where(id: likedCommentIds)
+    end
   end
 
   # GET /comments/1
@@ -22,11 +36,6 @@ class CommentsController < ApplicationController
   end
   
   def threads
-    if cookies.signed[:user_id].nil?
-      redirect_to(login_path)
-    else
-      @comments = Comment.where(user_id: cookies.signed[:user_id])
-    end
   end
 
   # PUT /posts/1/comment
