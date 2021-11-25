@@ -23,15 +23,15 @@
     </tr>
     <tr>
       <td></td>
-      <td><a href=""><u>submissions</u></a></td>
+      <td><a href="<%= posts_path(:user => @user.name) %>"><u>submissions</u></a></td>
     </tr>
     <tr>
       <td></td>
-      <td><a href=""><u>comments</u></a></td>
+      <td><a href="<%= comments_path(:user => @user.name) %>"><u>comments</u></a></td>
     </tr>
     <tr>
       <td></td>
-      <td><a href=""><u>upvoted submissions</u></a> / <a href=""><u>comments</u></a></td>
+      <td><a href="<%= posts_path(:upvoted_by => @user.name) %>"><u>upvoted submissions</u></a> / <a href="<%= comments_path(:upvoted_by => @user.name) %>"><u>comments</u></a></td>
     </tr>
   </table>
   <br>
