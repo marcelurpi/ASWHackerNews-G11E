@@ -9,7 +9,7 @@ class PostsController < ApplicationController
       @posts = Post.all.sort { |a, b| -a.created_at.to_i <=> -b.created_at.to_i }
     elsif !params[:user].nil?
       user = User.find_by(name: params[:user])
-      @posts = Post.where(author: user.name).sort { |a, b| -a.points <=> -b.points }
+      @posts = Post.where(author_id: user.id).sort { |a, b| -a.points <=> -b.points }
     elsif !params[:upvoted_by].nil?
       user = User.find_by(name: params[:upvoted_by])
       likedPostIds = Like.where(user_id: user.id).select(:post_id).to_a.map{|l| l.post_id}
@@ -58,6 +58,7 @@ class PostsController < ApplicationController
   #Hauria de trobar la manera d'identificar si l'usuari actual ha donat like o no per quan tinguem un login
   #Em dona error de Nil class com si el que li passés de l'índex estigués buit
   def like
+    p 'Liking?'
     @post.points = @post.points + 1
     @post.save
     respond_to do |format|
@@ -79,7 +80,7 @@ class PostsController < ApplicationController
   # POST /posts or /posts.json
   def create
     @post = Post.new(post_params)
-    if !Post.find_by(url: @post.url).nil?
+    if !@post.url.nil? && !@post.url.empty? && !Post.find_by(url: @post.url).nil?
       redirect_to(Post.find_by(url: @post.url))
     else
       
