@@ -6,9 +6,11 @@
                     <tr>
                         <td valign="top" class="votelinks">
                             <center>
-                                <a id="up_29206911" onclick="" href=""> <!-- VOTE -->
+                                <a id="up_29206911"> <!-- VOTE -->
                                 <% if cookies.signed[:user_id].nil? %>
                                   <div class="votearrow" title="vota"><%= link_to "\u00A0\u00A0", login_path, method: :get, :style=> 'text-decoration: none;'  %></div>
+                                <% elsif User.find(cookies.signed[:user_id]).id == comment.user_id %>
+                                  <div><font color="#ff6600">*</font></div>
                                 <% else %>
                                     <% pre_like = comment.commentlikes.find { |commentlike| commentlike.user_id == cookies.signed[:user_id]} %> 
                                     <% if pre_like %>

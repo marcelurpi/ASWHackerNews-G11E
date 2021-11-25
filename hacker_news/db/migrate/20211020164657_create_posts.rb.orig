@@ -4,7 +4,7 @@ class CreatePosts < ActiveRecord::Migration[5.0]
       t.string :title
       t.string :url
       t.string :content
-      t.string :author
+      t.integer :author_id
       t.integer :numcomments, default: 0
       t.integer :points, default: 0
       t.timestamps
