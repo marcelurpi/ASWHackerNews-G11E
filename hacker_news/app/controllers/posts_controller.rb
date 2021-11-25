@@ -43,10 +43,11 @@ class PostsController < ApplicationController
       redirect_to(login_path)
     
     else
-      @post.numcomments += 1;
-      @comment = @post.comments.create(content: params[:content], user_id: params[:user_id], post_id: params[:post_id]) #supuestamente el id del post ya está asociado a comment
-      
-      redirect_to (@post)
+      if !params[:content].nil? && !params[:content].blank?
+        @post.numcomments += 1;
+        @comment = @post.comments.create(content: params[:content], user_id: params[:user_id], post_id: params[:post_id]) #supuestamente el id del post ya está asociado a comment
+        redirect_to @post
+      end
     end
   end
 
@@ -92,8 +93,7 @@ class PostsController < ApplicationController
         if @post.save
           if !content.nil?
             @post.numcomments += 1;
-            author_id = User.find_by(name: @post.author).id
-            @comment = @post.comments.create(content: content, user_id: author_id, post_id: @post.id)
+            @comment = @post.comments.create(content: content, user_id: @post.author_id, post_id: @post.id)
           end
           format.html { redirect_to "/posts?newest=true", notice: "Post was successfully created." }
           format.json { head :no_content }
@@ -135,6 +135,6 @@ class PostsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def post_params
-      params.permit(:created_at, :updated_at,  :title, :content, :author, :url, :id_post)
+      params.permit(:created_at, :updated_at,  :title, :content, :author_id, :url, :id_post)
     end
 end

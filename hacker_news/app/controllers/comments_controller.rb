@@ -55,12 +55,12 @@ class CommentsController < ApplicationController
   # POST /comments
   # POST /comments.json
   def create
-    @comment = Comment.new(comment_params)
-    if @comment.commentable_type == 'Comment'
-      @comment.post_id = Comment.find(@comment.commentable_id).post_id
-    end
-
-    respond_to do |format|
+    if !params[:content].nil? && !params[:content].blank?
+      @comment = Comment.new(comment_params)
+      if @comment.commentable_type == 'Comment'
+        @comment.post_id = Comment.find(@comment.commentable_id).post_id
+      end
+      respond_to do |format|
       if @comment.save
         format.html { redirect_to @comment, notice: 'Comment was successfully created.' }
         format.json { render :show, status: :created, location: @comment }
@@ -69,7 +69,10 @@ class CommentsController < ApplicationController
         format.json { render json: @comment.errors, status: :unprocessable_entity }
       end
     end
+  else
+    redirect_to Comment.find(params[:comment_id])
   end
+end
 
 
   # DELETE /comments/1

@@ -7,18 +7,22 @@
                     </td>      
                     <td valign="top" class="votelinks">
                       <center>
-                        <a id="up_29016506" href="CANVIAR"> <!-- link a upvote -->
                           <% if cookies.signed[:user_id].nil? %>
+                            <a id="up_29016506" href="CANVIAR">
                             <div class="votearrow" title="vota"><%= link_to "\u00A0\u00A0", login_path, method: :get %></div>
+                            </a>
+                           <% elsif User.find(cookies.signed[:user_id]).id == @post.author_id %>
+                              <div><font color="#ff6600">*</font></div>
                           <% else %>
+                            <a id="up_29016506" href="CANVIAR">
                             <% pre_like = @post.likes.find { |like| like.user_id == cookies.signed[:user_id]} %> 
                             <% if pre_like %>
                               <div class="voterrow" title="vota" style="width: 16px;"></div>
                             <% else %>
                               <div class="votearrow" title="vota" style="width: 12px;"><%= link_to "\u00A0\u00A0", post_likes_path(@post), method: :post %></div>
                             <% end %>
+                            </a>
                           <% end %>
-                        </a>
                       </center>
                     </td>
                     <td class="title">
@@ -30,7 +34,7 @@
                     <td colspan="2"></td>
                     <td class="subtext">
                       <span class="score" id="score_29016506"><%= @post.likes.count %> points</span> 
-                        by <a href="<%= profile_login_path(:name => @post.author) %>" class="hnuser"><%= @post.author %></a> 
+                       by <a href="<%= profile_login_path(:name => @post.author_id) %>" class="hnuser"><%= @post.author_id %></a> 
                       <span class="age" title="<%@post.created_at%>">
                         <a href="CANVIAR"><%= time_ago_in_words(@post.created_at)  %> ago</a></span> <!-- no entenc on se suposa que porta-->
                       <span id="unv_29016506">
