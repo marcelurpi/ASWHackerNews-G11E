@@ -1,0 +1,70 @@
+<table class="fatitem" border="0">
+    <tbody>
+        <tr class="athing" id="29201335">    
+            <td class="ind"></td>
+            <td valign="top" class="votelinks">
+                <center>
+                    <% if cookies.signed[:user_id].nil? %>
+                      <div class="votearrow" title="vota"><%= link_to "\u00A0\u00A0", login_path, method: :get %></div>
+                    <% elsif User.find(cookies.signed[:user_id]).id == @comment.user_id %>
+                        <div><font color="#ff6600">*</font></div>
+                    <% else %>
+                      <% pre_like = @comment.commentlikes.find { |like| like.user_id == cookies.signed[:user_id]} %> 
+                      <% if pre_like %>
+                        <div class="voterrow" title="vota" style="width: 14px; height:19px;"></div>
+                      <% else %>
+                        <div class="votearrow" title="vota"><%= link_to "\u00A0\u00A0", comment_commentlikes_path(@comment), method: :post %></div>
+                      <% end %>
+                    <% end %>
+                </center>    
+            </td>
+            <td class="default">
+                <div style="margin-top:2px; margin-bottom:-10px;">
+                    <span class="comhead">
+                        <a href="<%= profile_login_path(:name => User.find(@comment.user_id).name)%>" class="hnuser"> <%= User.find(@comment.user_id).name %> </a> 
+                        <span class="age" title="2021-11-12T16:45:17">
+                            <%= time_ago_in_words(@comment.created_at) %> ago
+                        </span> 
+                        <span>
+                            | <%= @comment.commentlikes.count %> points
+                        </span>
+                        <span>
+                            <% pre_commentlike = @comment.commentlikes.find { |commentlike| commentlike.user_id == cookies.signed[:user_id]} %>
+                            <% if pre_commentlike %>
+                                | <%= link_to 'unlike', comment_commentlike_path(@comment, pre_commentlike), method: :delete %>
+                            <% end %>
+                        </span>
+                        <span class="onstory"> 
+                            |  on: <a href="<%= post_path(@comment.post_id) %>"><%= Post.find(@comment.post_id).title %></a>
+                        </span>
+                    </span>
+                </div>
+                <br>
+                <div class="comment">
+                    <span class="commtext c00"> 
+                        <%= @comment.content %>
+                        <div class="reply"></div>
+                    </span>
+                </div>
+            </td>
+        </tr>
+        <tr style="height:10px"></tr>
+        <tr>
+            <td colspan="2"></td>
+            <td>
+                <%= form_for [@comment, Comment.new] do |f| %>
+                    <%=f.hidden_field :commentable_id, value: @comment.id %>
+                    <%=f.hidden_field :commentable_type, value: "Comment" %>
+                    <%=f.hidden_field :post_id, value: @comment.post_id %>
+                    <% if cookies.signed[:user_id].nil? %> 
+                      <%= controller.redirect_to(login_path) %>
+                    <% else %>
+                      <%= f.hidden_field :user_id, value: User.find(cookies.signed[:user_id]).id %>
+                    <% end %>
+                    <%=f.text_area :content, placeholder: "Add a Reply", rows: 6, cols: 60%><br/>
+                    <%=f.submit "Reply"  %>
+                <% end %>
+            </td>
+        </tr>
+    </tbody>
+</table>

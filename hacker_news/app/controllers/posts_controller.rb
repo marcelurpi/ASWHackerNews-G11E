@@ -1,40 +1,107 @@
 class PostsController < ApplicationController
-  before_action :set_post, only: %i[ show edit update destroy ]
+  before_action :set_post, only: %i[ show edit update destroy comment like unlike]
 
   # GET /posts or /posts.json
   def index
-    @posts = Post.all.sort { |a, b| -a.points <=> -b.points }
+    if !params[:ask].nil? && params[:ask]
+      @posts = Post.where(url: "").sort { |a, b| -a.points <=> -b.points }
+    elsif !params[:newest].nil? && params[:newest]
+      @posts = Post.all.sort { |a, b| -a.created_at.to_i <=> -b.created_at.to_i }
+    elsif !params[:user].nil?
+      user = User.find_by(name: params[:user])
+      @posts = Post.where(author_id: user.id).sort { |a, b| -a.points <=> -b.points }
+    elsif !params[:upvoted_by].nil?
+      user = User.find_by(name: params[:upvoted_by])
+      likedPostIds = Like.where(user_id: user.id).select(:post_id).to_a.map{|l| l.post_id}
+      @posts = Post.where(id: likedPostIds).sort { |a, b| -a.points <=> -b.points }
+    else
+      @posts = Post.all.sort { |a, b| -a.points <=> -b.points }
+    end
   end
   
-  def newest
-    @posts = Post.all.sort { |a, b| -a.created_at.to_i <=> -b.created_at.to_i }
-  end
-
+  def ask
+    @postsask = Post.where(url: "")
+  end 
+  
   # GET /posts/1 or /posts/1.json
   def show
+    @comments = Comment.all
+    @users = User.all
   end
 
   # GET /posts/new
   def new
     @post = Post.new
+    if cookies.signed[:user_id].nil?
+      redirect_to(login_path)
+    end
+  end
+  
+  # PUT /posts/1/comment
+  def comment
+    if cookies.signed[:user_id].nil?
+      redirect_to(login_path)
+    
+    else
+      if !params[:content].nil? && !params[:content].blank?
+        @post.numcomments += 1;
+        @comment = @post.comments.create(content: params[:content], user_id: params[:user_id], post_id: params[:post_id]) #supuestamente el id del post ya está asociado a comment
+        redirect_to @post
+      end
+    end
   end
 
   # GET /posts/1/edit
   def edit
   end
+
+  #Hauria de trobar la manera d'identificar si l'usuari actual ha donat like o no per quan tinguem un login
+  #Em dona error de Nil class com si el que li passés de l'índex estigués buit
+  def like
+    p 'Liking?'
+    @post.points = @post.points + 1
+    @post.save
+    respond_to do |format|
+      format.html { redirect_to "/posts"}
+      format.json { head :no_content }
+    end
+  end
   
+  # Encara no comprovat pq no puc treure el like que no he posat abans
+  def unlike
+    @post.points = @post.points - 1
+    @post.save
+    respond_to do |format|
+      format.html { redirect_to "/posts"}
+      format.json { head :no_content }
+    end
+  end
 
   # POST /posts or /posts.json
   def create
     @post = Post.new(post_params)
-
-    respond_to do |format|
-      if @post.save
-        format.html { redirect_to "/posts/newest", notice: "Post was successfully created." }
-        format.json { head :no_content }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @post.errors, status: :unprocessable_entity }
+    if !@post.url.nil? && !@post.url.empty? && !Post.find_by(url: @post.url).nil?
+      redirect_to(Post.find_by(url: @post.url))
+    else
+      
+      
+      content = nil
+      if !@post.url.nil? && !@post.url.empty? && !@post.content.nil? && !@post.content.empty?
+        content = @post.content
+        @post.content = ""
+      end
+      respond_to do |format|
+        if @post.save
+          if !content.nil?
+            @post.numcomments += 1;
+            @comment = @post.comments.create(content: content, user_id: @post.author_id, post_id: @post.id)
+          end
+          format.html { redirect_to "/posts?newest=true", notice: "Post was successfully created." }
+          format.json { head :no_content }
+        else
+          format.html { render :new, status: :unprocessable_entity }
+          format.json { render json: @post.errors, status: :unprocessable_entity }
+        end
       end
     end
   end
@@ -69,6 +136,6 @@ class PostsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def post_params
-      params.permit(:created_at, :updated_at,  :title, :content, :author)
+      params.permit(:created_at, :updated_at,  :title, :content, :author_id, :url, :id_post)
     end
 end
