@@ -4,6 +4,9 @@ class LoginController < ApplicationController
   
   def profile
     @user = User.find_by(name: params[:name])
+    key   = ActiveSupport::KeyGenerator.new(ENV['SECRET_KEY']).generate_key(ENV['ENCRYPTION_SALT'], ActiveSupport::MessageEncryptor.key_len)
+    crypt = ActiveSupport::MessageEncryptor.new(key)
+    @api_key = crypt.encrypt_and_sign(@user.id)
   end
   
   def update

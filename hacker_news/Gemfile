@@ -29,6 +29,8 @@ gem 'bootsnap'
 
 gem 'google_sign_in'
 
+gem 'rack-cors'
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 

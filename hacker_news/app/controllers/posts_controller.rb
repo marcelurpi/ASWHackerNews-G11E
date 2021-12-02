@@ -3,15 +3,29 @@ class PostsController < ApplicationController
 
   # GET /posts or /posts.json
   def index
-    if !params[:ask].nil? && params[:ask]
+    if !params[:type].nil? && params[:type] == 'ask'
       @posts = Post.where(url: "").sort { |a, b| -a.points <=> -b.points }
-    elsif !params[:newest].nil? && params[:newest]
+    elsif !params[:type].nil? && params[:type] == 'newest'
       @posts = Post.all.sort { |a, b| -a.created_at.to_i <=> -b.created_at.to_i }
-    elsif !params[:user].nil?
-      user = User.find_by(name: params[:user])
+    elsif !params[:author].nil?
+      user = User.find_by(name: params[:author])
+      if user.nil?
+        respond_to do |format|
+          format.html
+          format.json { head :bad_request }
+        end
+        return
+      end
       @posts = Post.where(author_id: user.id).sort { |a, b| -a.points <=> -b.points }
     elsif !params[:upvoted_by].nil?
       user = User.find_by(name: params[:upvoted_by])
+      if user.nil?
+        respond_to do |format|
+          format.html
+          format.json { head :bad_request }
+        end
+        return
+      end
       likedPostIds = Like.where(user_id: user.id).select(:post_id).to_a.map{|l| l.post_id}
       @posts = Post.where(id: likedPostIds).sort { |a, b| -a.points <=> -b.points }
     else
@@ -41,7 +55,6 @@ class PostsController < ApplicationController
   def comment
     if cookies.signed[:user_id].nil?
       redirect_to(login_path)
-    
     else
       if !params[:content].nil? && !params[:content].blank?
         @post.numcomments += 1;
@@ -79,12 +92,35 @@ class PostsController < ApplicationController
 
   # POST /posts or /posts.json
   def create
+    author_id = nil
+    if request.format.json?
+      if params['X-API-KEY'].nil?
+        respond_to do |format|
+          format.html
+          format.json { head :unauthorized }
+        end
+        return
+      else
+        key   = ActiveSupport::KeyGenerator.new(ENV['SECRET_KEY']).generate_key(ENV['ENCRYPTION_SALT'], ActiveSupport::MessageEncryptor.key_len)
+        crypt = ActiveSupport::MessageEncryptor.new(key)
+        author_id = crypt.decrypt_and_verify(params['X-API-KEY'])
+        if author_id.nil?
+          respond_to do |format|
+            format.html
+            format.json { head :unauthorized }
+          end
+          return
+        end
+      end
+    end
+    
     @post = Post.new(post_params)
+    if !author_id.nil?
+      @post.author_id = author_id
+    end
     if !@post.url.nil? && !@post.url.empty? && !Post.find_by(url: @post.url).nil?
       redirect_to(Post.find_by(url: @post.url))
     else
-      
-      
       content = nil
       if !@post.url.nil? && !@post.url.empty? && !@post.content.nil? && !@post.content.empty?
         content = @post.content
@@ -97,7 +133,7 @@ class PostsController < ApplicationController
             @comment = @post.comments.create(content: content, user_id: @post.author_id, post_id: @post.id)
           end
           format.html { redirect_to "/posts?newest=true", notice: "Post was successfully created." }
-          format.json { head :no_content }
+          format.json { render json: @post }
         else
           format.html { render :new, status: :unprocessable_entity }
           format.json { render json: @post.errors, status: :unprocessable_entity }
@@ -138,4 +174,4 @@ class PostsController < ApplicationController
     def post_params
       params.permit(:created_at, :updated_at,  :title, :content, :author_id, :url, :id_post)
     end
-end
+  end
