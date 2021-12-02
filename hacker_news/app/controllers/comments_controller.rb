@@ -11,11 +11,25 @@ class CommentsController < ApplicationController
       else
         @comments = Comment.where(user_id: cookies.signed[:user_id])
       end
-    elsif !params[:user].nil?
-      user = User.find_by(name: params[:user])
+    elsif !params[:author].nil?
+      user = User.find_by(name: params[:author])
+      if user.nil?
+        respond_to do |format|
+          format.html
+          format.json { head :bad_request }
+        end
+        return
+      end
       @comments = Comment.where(user_id: user.id)
     elsif !params[:upvoted_by].nil?
       user = User.find_by(name: params[:upvoted_by])
+      if user.nil?
+        respond_to do |format|
+          format.html
+          format.json { head :bad_request }
+        end
+        return
+      end
       likedCommentIds = Commentlike.where(user_id: user.id).select(:comment_id).to_a.map{|c| c.comment_id}
       @comments = Comment.where(id: likedCommentIds)
     end
@@ -55,24 +69,64 @@ class CommentsController < ApplicationController
   # POST /comments
   # POST /comments.json
   def create
-    if !params[:content].nil? && !params[:content].blank?
-      @comment = Comment.new(comment_params)
-      if @comment.commentable_type == 'Comment'
-        @comment.post_id = Comment.find(@comment.commentable_id).post_id
-      end
-      respond_to do |format|
-      if @comment.save
-        format.html { redirect_to @comment, notice: 'Comment was successfully created.' }
-        format.json { render :show, status: :created, location: @comment }
+    author_id = nil
+    if request.format.json?
+      if params['X-API-KEY'].nil?
+        respond_to do |format|
+          format.html
+          format.json { head :unauthorized }
+        end
+        return
       else
-        format.html { render :new }
-        format.json { render json: @comment.errors, status: :unprocessable_entity }
+        key   = ActiveSupport::KeyGenerator.new(ENV['SECRET_KEY']).generate_key(ENV['ENCRYPTION_SALT'], ActiveSupport::MessageEncryptor.key_len)
+        crypt = ActiveSupport::MessageEncryptor.new(key)
+        author_id = crypt.decrypt_and_verify(params['X-API-KEY'])
+        if author_id.nil?
+          respond_to do |format|
+            format.html
+            format.json { head :unauthorized }
+          end
+          return
+        end
+        if !params[:comment][:content].nil? && !params[:comment][:content].blank?
+          @comment = Comment.new(comment_params)
+          @comment.commentable_type = 'Post'
+          @comment.post_id = params[:post_id],
+          @comment.commentable_id = params[:post_id]
+          @comment.user_id = author_id
+          respond_to do |format|
+            if @comment.save
+              format.html
+              format.json { render json: @comment }
+            else
+              format.html
+              format.json { render json: @comment.errors, status: :unprocessable_entity }
+            end
+          end
+        else
+          redirect_to Comment.find(params[:comment_id])
+        end
+      end
+    else
+      if !params[:comment][:content].nil? && !params[:comment][:content].blank?
+        @comment = Comment.new(comment_params)
+        if @comment.commentable_type == 'Comment'
+          @comment.post_id = Comment.find(@comment.commentable_id).post_id
+        end
+        respond_to do |format|
+          if @comment.save
+            format.html { redirect_to @comment, notice: 'Comment was successfully created.' }
+            format.json { render :show, status: :created, location: @comment }
+          else
+            format.html { render :new }
+            format.json { render json: @comment.errors, status: :unprocessable_entity }
+          end
+        end
+      else
+        redirect_to Comment.find(params[:comment_id])
       end
     end
-  else
-    redirect_to Comment.find(params[:comment_id])
   end
-end
 
 
   # DELETE /comments/1
