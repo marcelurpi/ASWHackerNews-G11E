@@ -1,0 +1,674 @@
+openapi: 3.0.1
+info:
+  version: 1.0.0
+  title: HackerNews
+  description: "This is the Open API documentation for the REST API of HackerNews. By: Carlos Rasche, Clara Estruch, Tatiana Meyer, Marcel Urpí & Carlos Exojo"
+servers:
+  - url: 'https://aswhackernewsg11e.herokuapp.com/'
+  - url: ‘http://3.87.183.13:8080’
+  - url: ‘http://54.152.124.246:8080’
+
+
+paths:
+  /posts:
+    get:
+      tags:
+      - Posts
+      summary: Mostra tots els posts
+      operationId: posts_index 
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'      
+    post: 
+      tags:
+      - Posts
+      summary: Crea un nou post
+      operationId: posts_create
+      security:
+        - ApiKeyAuth: []     # use the same name as under securitySchemes
+      requestBody:
+        description: Provide the author, title, content & url of the new Post
+        content:
+          application/json:
+            schema:
+              required:
+              - author_id
+              - content
+              - title
+              - url
+              type: object
+              properties:
+                author_id:
+                  type: string
+                  minLength: 4
+                  example: 'My name'
+                content:
+                  type: string
+                  minLength: 1
+                  maxLength: 500
+                  example: 'My content'
+                title:
+                  type: string
+                  minLength: 1
+                  maxLength: 200
+                  example: 'My title'
+                url:
+                  type: string
+                  example: 'youtube.com'
+        required: true
+      responses:
+        201:
+          description: Post created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        400:
+          description: 'Error: Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error400'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+      
+  
+                  
+  /posts/{id_post}:
+    get:
+      tags:
+      - Posts
+      summary: Retorna un post
+      description: Mostra el post identificat per post_id
+      operationId: getPostById
+      parameters:
+      - name: id_post
+        in: path
+        description: ID del post a mostrar
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/errorPost404'
+
+  /posts/{id_post}/likes:
+    post:
+      tags:
+      - Posts
+      summary: Fa like a un post
+      description: Fa like de l'usuari actual al post identificat per post_id
+      operationId: create_post_like
+      parameters:
+        - name: id_post
+          in: path
+          required: true
+          schema:
+            type: integer
+      security:
+        - ApiKeyAuth: []     # use the same name as under securitySchemes   
+      responses:
+        201:
+          description: Like created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Like'
+        400:
+          description: 'Error: Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error400'
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/errorPost404'
+
+  /posts/{id_post}/likes/{user_id}:
+    delete:
+      tags:
+      - Posts
+      summary: Esborra un like de post
+      description: Esborra el like fet per user_id al post identificat per post_id
+      operationId: delete_post_like
+      parameters:
+        - name: id_post
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      security:
+        - ApiKeyAuth: []     # use the same name as under securitySchemes
+      responses:
+        204:
+          description: Like eliminado
+          content:
+            application/json: {}
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorPostExample:
+                  $ref: '#/components/examples/errorPost404'
+                errorUserExample:
+                  $ref: '#/components/examples/errorUser404'
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        403:
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error403'
+
+  /posts/{id_post}/comments:
+    post:
+      tags:
+      - Posts
+      summary: Afegeix un comentari
+      description: Afegeix un comentari al post identificat per id_post i retorna el comentari que s'ha creat
+      operationId: comment_post
+      requestBody:
+        description: Provide the author & content of the new Comment
+        content:
+          application/json:
+            schema:
+              required:
+              - author
+              - content
+              type: object
+              properties:
+                author:
+                  type: string
+                  minLength: 4
+                  example: 'My name'
+                content:
+                  type: string
+                  minLength: 1
+                  maxLength: 500
+                  example: 'My content'
+        required: true
+      parameters:
+        - name: id_post
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - ApiKeyAuth: []     # use the same name as under securitySchemes
+      responses:
+        201:
+          description: Comment created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        400:
+          description: 'Error: Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error400'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+                
+
+  /comments:
+    get:
+      tags: 
+      - Comments
+      summary: Retorna llistat de comentaris
+      description: Retorna llistat de tots els comentaris
+      operationId: comments_all
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+                  
+  /comments/{author}:
+    get:
+      tags: 
+      - Comments
+      summary: Retorna llistat de comentaris
+      description: Retorna llistat de comentaris segons l'autor identificat per {author}
+      operationId: comments_by_author
+      parameters:
+        - name: author
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+    
+  /comments/{upvoted_by}:
+    get:
+      tags: 
+      - Comments
+      summary: Retorna llistat de comentaris
+      description: Retorna llistat de comentaris votats per {upvoted_by}
+      operationId: comments_by_upvoted
+      parameters:
+        - name: upvoted_by
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+
+  /comments/{comment_id}:
+    get:
+      tags:
+      - Comments
+      summary: Mostra un comentari
+      description: Mostra el comentari identificat per comment_id
+      operationId: show_comment
+      parameters:
+        - name: comment_id
+          in: path
+          description: ID del comment a mostrar
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/errorComment404'
+
+  /comments/{comment_id}/commentlikes:
+    post:
+      tags:
+      - Comments
+      summary: Fa like a un comentari
+      description: Afegeix un like de l'usuari actual al comentari identificat per comment_id
+      operationId: comment_commentlikes
+      parameters:
+        - name: comment_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      security:
+        - ApiKeyAuth: []     # use the same name as under securitySchemes
+      responses:
+        201:
+          description: CommentLike created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentLike'
+        400:
+          description: 'Error: Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error400'
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/errorComment404'
+
+  /comments/{comment_id}/commentlikes/{user_id}:
+    delete:
+      tags:
+      - Comments
+      summary: Esborra un like de comentari
+      description: Esborra el like fet per user_id al comentari identificat per comment_id
+      operationId: delete_comment_like
+      parameters:
+        - name: comment_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      security:
+        - ApiKeyAuth: []     # use the same name as under securitySchemes
+      responses:
+        204:
+          description: CommentLike eliminado
+          content:
+            application/json: {}
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorCommentExample:
+                  $ref: '#/components/examples/errorComment404'
+                errorUserExample:
+                  $ref: '#/components/examples/errorUser404'
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        403:
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error403'
+
+
+                  
+components:
+  securitySchemes:
+    ApiKeyAuth:        # arbitrary name for the security scheme
+      type: apiKey
+      in: query       # can be "header", "query" or "cookie"
+      name: X-API-KEY  # name of the header, query parameter or cookie
+
+  schemas:
+    Post:
+      type: object
+      properties:
+        id_post:
+          type: integer
+          format: int64
+          example: 2
+        title:
+          type: string
+          minLength: 4
+          example: 'Titol del post'
+        url:
+          type: string
+          example: 'http://google.com'
+        content:
+          type: string
+          example: "Contingut d'un post a HN"
+        author:
+          type: string
+          example: "Pepe Pipa"
+        numcomments:
+          type: integer
+          example: 3
+        points:
+          type: integer
+          example: 6
+        created_at:
+          type: string
+          format: date-time
+          example: '2011-06-11T21:20:44+09:00'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2011-06-11T21:23:44+09:00'
+          
+    Comment:
+      type: object
+      properties:
+        comment_id:
+          type: integer
+          example: 22
+        content:
+          type: string
+          example: "Contingut d'un comentari a HN"
+        points:
+          type: integer
+          example: 4
+        created_at:
+          type: string
+          format: date-time
+          example: '2011-06-11T21:20:44+09:00'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2011-06-11T21:23:44+09:00'
+        post_id:
+          type: integer
+          example: 2
+        user_id:
+          type: integer
+          example: 28753
+        commentable_id:
+          type: integer
+          example: 4
+        commentable_type:
+          type: string
+          example: 'Comment'
+        
+    Like:
+      type: object
+      properties:
+        post_id: 
+          type: integer
+          example: 2
+        user_id:
+          type: integer
+          example: 28753
+        created_at:
+          type: string
+          format: date-time
+          example: '2011-06-11T21:20:44+09:00'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2011-06-11T21:23:44+09:00'
+          
+    CommentLike:
+      type: object
+      properties:
+        comment_id: 
+          type: integer
+          example: 22
+        user_id:
+          type: integer
+          example: 28753
+        created_at:
+          type: string
+          format: date-time
+          example: '2011-06-11T21:20:44+09:00'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2011-06-11T21:23:44+09:00'
+
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'Joan Dausà'
+        email:
+          type: string
+          format: email
+          example: 'info@joandausa.com'
+        google_id:
+          type: string
+          example:
+        
+    ErrorResult:
+      type: object
+      properties:
+        status:
+          type: integer
+          enum: [400, 401, 403, 404, 409]
+        error: 
+          type: string
+          enum: ["Bad Request", "Unauthorized", "Forbidden", "Not Found", "Conflict"]
+        message: 
+          type: string
+          
+          
+  examples:
+    error400:
+      value:
+        status: 400
+        error: "Bad Request"
+        message: "Algún parámetro no cumple con las restricciones"
+    error401:
+      value:
+        status: 401
+        error: "Unauthorized"
+        message: "No has proporcionado una api key (X-API-KEY Header)"
+    error403:
+      value:
+        status: 403
+        error: "Forbidden"
+        message: "Tu api key (X-API-KEY Header) no es válida"
+    errorPost404:
+      value:
+        status: 404
+        error: "Not Found"
+        message: "No hay post con ese ID"
+    errorComment404:
+      value:
+        status: 404
+        error: "Not Found"
+        message: "No hay comment con ese ID"
+    errorUser404:
+      value:
+        status: 404
+        error: "Not Found"
+        message: "No hay user con ese ID"
