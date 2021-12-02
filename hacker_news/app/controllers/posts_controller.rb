@@ -53,13 +53,21 @@ class PostsController < ApplicationController
   
   # PUT /posts/1/comment
   def comment
-    if cookies.signed[:user_id].nil?
-      redirect_to(login_path)
+    if request.format.json?
+      respond_to do |format|
+          format.html
+          format.json { head :bad_request }
+        end
+        return
     else
-      if !params[:content].nil? && !params[:content].blank?
-        @post.numcomments += 1;
-        @comment = @post.comments.create(content: params[:content], user_id: params[:user_id], post_id: params[:post_id]) #supuestamente el id del post ya está asociado a comment
-        redirect_to @post
+      if cookies.signed[:user_id].nil?
+        redirect_to(login_path)
+      else
+        if !params[:content].nil? && !params[:content].blank?
+          @post.numcomments += 1;
+          @comment = @post.comments.create(content: params[:content], user_id: params[:user_id], post_id: params[:post_id]) #supuestamente el id del post ya está asociado a comment
+          redirect_to @post
+        end
       end
     end
   end
@@ -115,10 +123,10 @@ class PostsController < ApplicationController
     end
     
     @post = Post.new(post_params)
-    if !author_id.nil?
+    if !author_id.nil?    #si el author no es nulo
       @post.author_id = author_id
     end
-    if !@post.url.nil? && !@post.url.empty? && !Post.find_by(url: @post.url).nil?
+    if !@post.url.nil? && !@post.url.empty? && !Post.find_by(url: @post.url).nil?     #si existe un post con el url 
       redirect_to(Post.find_by(url: @post.url))
     else
       content = nil
@@ -133,7 +141,7 @@ class PostsController < ApplicationController
             @comment = @post.comments.create(content: content, user_id: @post.author_id, post_id: @post.id)
           end
           format.html { redirect_to "/posts?newest=true", notice: "Post was successfully created." }
-          format.json { render json: @post }
+          format.json { render json: @post}
         else
           format.html { render :new, status: :unprocessable_entity }
           format.json { render json: @post.errors, status: :unprocessable_entity }
