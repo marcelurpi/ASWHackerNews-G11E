@@ -1,0 +1,39 @@
+
+<% @comments.each do |comment| %>
+  <tr>
+               <td>      
+            <tr class='athing comtr' id='29211228'>
+               <td>
+                  <table border='0'>
+                     <tr>
+                        <td class='ind'indent='0'><img src="s.gif" height="1" width="0"></td>
+                        <td valign="top" class="votelinks">
+                           <center><font color="#ff6600">*</font><br>
+                              <img src="s.gif" height="1" width="14">
+                           </center>
+                        </td>
+                        <td class="default">
+                           <div style="margin-top:2px; margin-bottom:-10px;"><span class="comhead">
+                              <span class="score" id="score"><%= comment.commentlikes.count %> points</span> 
+                              by <a class="hnuser" href="<%= profile_login_path(:name => User.find(cookies.signed[:user_id]).name) %>"><%= User.find(cookies.signed[:user_id]).name %></a> 
+                              <span class="age" title="time"><%= time_ago_in_words(comment.created_at)  %> ago</span>
+                              <span class="onstory">|  on: <a href= "<%= post_path(comment.post_id) %>"><%= Post.find(comment.post_id).title %></a></span>
+                           </div>
+                           <br>
+                           <div class="comment">
+                              <%= comment.content %>
+                              <span class="commtext c00">
+                                    <div class="reply">        
+                                        <font size="1">
+                                            <u><a><%= link_to "reply", comment_path(comment) %> </a></u>
+                                        </font>
+                                        
+                                    </div>
+                                </span>
+                           </div>
+                        </td>
+                     </tr>
+                  </table>
+               </td>
+            </tr>
+<% end %>

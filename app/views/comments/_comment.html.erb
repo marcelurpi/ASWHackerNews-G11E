@@ -1,0 +1,64 @@
+<table border="0" class="comment-tree">
+    <tr class="athing comtr">
+        <td colspan="2">
+            <table border="0">  
+                <tbody>
+                    <tr>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <a id="up_29206911" onclick="" href=""> <!-- VOTE -->
+                                <% if cookies.signed[:user_id].nil? %>
+                                  <div class="votearrow" title="vota"><%= link_to "\u00A0\u00A0", login_path, method: :get, :style=> 'text-decoration: none;'  %></div>
+                                <% else %>
+                                  <div class="votearrow" title="vota"><%= link_to "\u00A0\u00A0", comment_commentlikes_path(comment), method: :post, :style=> 'text-decoration: none;'  %></div>
+                                <% end %>
+                                    
+                                </a>
+                            </center>    
+                        </td>
+                        <td class="default">
+                            <div style="margin-top:2px; margin-bottom:-10px;">
+                                <span class="comhead">
+                                    <a href="<%= profile_login_path(:name => User.find(comment.user_id).name) %>" class="hnuser"><%= User.find(comment.user_id).name %></a> <!-- LINK A USER -->
+                                    <span class="age" title="2021-11-13T02:41:20">
+                                        <%= time_ago_in_words(comment.created_at)  %> ago
+                                    </span> 
+                                    <span>
+                                        | <%= comment.commentlikes.count %> points
+                                    </span>
+                                    
+                                    <% pre_commentlike = comment.commentlikes.find { |commentlike| commentlike.user_id == cookies.signed[:user_id]} %>
+                                    <% if pre_commentlike %>
+                                        | <%= link_to 'unlike', comment_commentlike_path(comment, pre_commentlike), method: :delete %>
+                                    <% end %>
+                                    
+                                    
+                                    <span class="onstory"></span>                  
+                                </span>
+                            </div>
+                            <br>
+                            <div class="comment">
+                                <%= comment.content %>
+                                <span class="commtext c00">
+                                    <div class="reply">        
+                                        <font size="1">
+                                            <u><a><%= link_to "reply", comment_path(comment) %> </a></u>
+                                        </font>
+                                        
+                                    </div>
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    <tr class="athing comtr">    
+        <td style="width: 30px;"></td>
+        <td>
+            <%= render partial: 'comments/comment', collection: comment.comments %>
+        </td>
+    </tr>
+</table>
+
