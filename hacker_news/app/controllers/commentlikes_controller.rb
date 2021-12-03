@@ -5,19 +5,37 @@ class CommentlikesController < ApplicationController
   def create
     if already_liked?
       flash[:notice] = "You can't like more than once"
+      respond_to do |format|
+        format.html { redirect_to session.delete(:return_to) }
+        format.json { head :unauthorized }
+      end
     else
-      @comment.commentlikes.create(user_id: cookies.signed[:user_id])
+      @newlike = @comment.commentlikes.create(user_id: cookies.signed[:user_id])
+      @comment.points+=1
+      @comment.save
+      respond_to do |format|
+        format.html { redirect_to session.delete(:return_to) }
+        format.json { render json: @newlike}
+      end
     end
-    redirect_to session.delete(:return_to)
   end
     
   def destroy
     if !(already_liked?)
       flash[:notice] = "Cannot unlike"
+      respond_to do |format|
+        format.html { redirect_to session.delete(:return_to) }
+        format.json { head :unauthorized }
+      end
     else
+      @commentlike.comment.points-=1
+      @commentlike.comment.save
       @commentlike.destroy
+      respond_to do |format|
+        format.html { redirect_to session.delete(:return_to) }
+        format.json { render json: @commentlike.comment}
+      end
     end
-    redirect_to session.delete(:return_to)
   end
   
   def find_commentlike

@@ -5,19 +5,37 @@ class LikesController < ApplicationController
   def create
     if already_liked?
       flash[:notice] = "You can't like more than once"
+      respond_to do |format|
+        format.html { redirect_to session.delete(:return_to) }
+        format.json { head :unauthorized }
+      end
     else
-      @post.likes.create(user_id: cookies.signed[:user_id])
+      @newlike = @post.likes.create(user_id: cookies.signed[:user_id])
+      @post.points+=1
+      @post.save
+      respond_to do |format|
+        format.html { redirect_to session.delete(:return_to) }
+        format.json { render json: @newlike}
+      end
     end
-    redirect_to session.delete(:return_to)
   end
   
   def destroy
     if !(already_liked?)
       flash[:notice] = "Cannot unlike"
+      respond_to do |format|
+        format.html { redirect_to session.delete(:return_to) }
+        format.json { head :unauthorized }
+      end
     else
+      @like.post.points-=1
+      @like.post.save
       @like.destroy
+      respond_to do |format|
+        format.html { redirect_to session.delete(:return_to) }
+        format.json { render json: @like.post}
+      end
     end
-    redirect_to session.delete(:return_to)
   end
   
   def find_like
