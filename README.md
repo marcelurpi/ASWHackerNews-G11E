@@ -14,7 +14,4 @@ Taiga del projecte:
 
 
 Aplicació a Heroku:
-- https://aswhackernewsg11e.herokuapp.com/
-
-Actualment la nostra API està funcionant en local a la branca "dev"
-La versió actual de Heroku correspon a un estat anterior
+- https://entrega2aswhn.herokuapp.com/
