@@ -15,3 +15,5 @@ Taiga del projecte:
 
 Aplicació a Heroku:
 - https://entrega2aswhn.herokuapp.com/
+
+La branca amb les darreres modificacions és "main"
