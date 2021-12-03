@@ -4,6 +4,7 @@ Rails.application.routes.draw do
     post 'login/profile', to: 'login#update', as: :update_login
     get 'login/create', to: 'login#create', as: :create_login
     get 'login/delete', to: 'login#delete', as: :delete_login
+    get '/usuaris', to: 'login#usuaris', as: :usuaris_login
       
     resources :submissions
     resources :posts do

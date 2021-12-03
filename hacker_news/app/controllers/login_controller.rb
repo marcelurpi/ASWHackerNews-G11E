@@ -9,6 +9,25 @@ class LoginController < ApplicationController
     @api_key = crypt.encrypt_and_sign(@user.id)
   end
   
+  def usuaris
+    p 'entra'
+    @usuaris = User.all
+    if !params[:usuari_id].nil? && params[:usuari_id]
+      p 'primer if'
+        @usuaris = User.where(id: params[:usuari_id] )
+        if @usuaris.nil?  #si el usuario es null
+          respond_to do |format|
+          format.html
+          format.json { head :bad_request }
+          end
+        end
+    end
+    respond_to do |format|
+          format.html
+          format.json { render json: @usuaris }
+    end
+  end
+  
   def update
     User.update(about: params[:about])
   end
