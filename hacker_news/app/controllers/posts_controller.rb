@@ -18,16 +18,39 @@ class PostsController < ApplicationController
       end
       @posts = Post.where(author_id: user.id).sort { |a, b| -a.points <=> -b.points }
     elsif !params[:upvoted_by].nil?
-      user = User.find_by(name: params[:upvoted_by])
-      if user.nil?
-        respond_to do |format|
-          format.html
-          format.json { head :bad_request }
+      if request.format.json?
+        if params['X-API-KEY'].nil?
+          respond_to do |format|
+            format.html
+            format.json { head :unauthorized }
+          end
+          return
+        else
+          userC = User.find_by(name: params[:upvoted_by])
+          
+          key   = ActiveSupport::KeyGenerator.new(ENV['SECRET_KEY']).generate_key(ENV['ENCRYPTION_SALT'], ActiveSupport::MessageEncryptor.key_len)
+          crypt = ActiveSupport::MessageEncryptor.new(key)
+          author_id = crypt.decrypt_and_verify(params['X-API-KEY'])
+          userL = User.find_by(user_id: author_id)
+          
+          if userC.nil?
+            respond_to do |format|
+              format.html
+              format.json { head :bad_request }
+            end
+            return
+          end
+          if userC != userL
+            respond_to do |format|
+              format.html
+              format.json { head :unauthorized }
+            end
+            return
+          end
+          likedPostIds = Like.where(user_id: userC.id).select(:post_id).to_a.map{|l| l.post_id}
+          @posts = Post.where(id: likedPostIds).sort { |a, b| -a.points <=> -b.points }
         end
-        return
       end
-      likedPostIds = Like.where(user_id: user.id).select(:post_id).to_a.map{|l| l.post_id}
-      @posts = Post.where(id: likedPostIds).sort { |a, b| -a.points <=> -b.points }
     else
       @posts = Post.all.sort { |a, b| -a.points <=> -b.points }
     end
