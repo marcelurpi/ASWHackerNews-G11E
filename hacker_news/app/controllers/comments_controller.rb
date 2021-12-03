@@ -55,7 +55,25 @@ class CommentsController < ApplicationController
           @comments = Comment.where(id: likedCommentIds)
         end
       end
-    
+      likedCommentIds = Commentlike.where(user_id: user.id).select(:comment_id).to_a.map{|c| c.comment_id}
+      @comments = Comment.where(id: likedCommentIds)
+    elsif !params[:id_post].nil?
+      @poste = Post.where(id_post: params[:id_post])
+      if @poste.nil?
+        p 'es nul'
+        respond_to do |format|
+          format.html
+          format.json { head :bad_request }
+        end
+        return
+      else
+        @comments = Comment.where(post_id: params[:id_post])
+        p 'no es null'
+        respond_to do |format|
+          format.html
+          format.json { render json: @comments}
+        end
+      end
     end
   end
 
