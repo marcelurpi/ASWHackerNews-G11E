@@ -82,6 +82,17 @@ class CommentsController < ApplicationController
       redirect_to(login_path)
       
     else
+      key   = ActiveSupport::KeyGenerator.new(ENV['SECRET_KEY']).generate_key(ENV['ENCRYPTION_SALT'], ActiveSupport::MessageEncryptor.key_len)
+      crypt = ActiveSupport::MessageEncryptor.new(key)
+      author_id = crypt.decrypt_and_verify(params['X-API-KEY'])
+      if author_id.nil?
+        respond_to do |format|
+          format.html
+          format.json { head :unauthorized }
+        end
+        return
+      end
+      
       @child = @commentable.comments.create(content: params[:content], user_id: params[:user_id])
     
       redirect_to (@commentable)
