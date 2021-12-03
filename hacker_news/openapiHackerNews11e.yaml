@@ -6,6 +6,7 @@ info:
 servers:
   - url: 'https://aswhackernewsg11e.herokuapp.com/'
   - url: 'http://54.175.8.134:8080'
+  - url: 'https://entrega2aswhn.herokuapp.com/'
 
 paths:
   /posts:
@@ -14,6 +15,8 @@ paths:
       - Posts
       summary: Mostra tots els posts
       operationId: posts_index 
+      security:
+        - ApiKeyAuth: []     # use the same name as under securitySchemes
       parameters:
         - name: type
           in: query
@@ -38,7 +41,17 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Post'      
+                  $ref: '#/components/schemas/Post'
+        403:
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error403'
+
     post: 
       tags:
       - Posts
@@ -52,16 +65,11 @@ paths:
           application/json:
             schema:
               required:
-              - author_id
               - content
               - title
               - url
               type: object
               properties:
-                author_id:
-                  type: string
-                  minLength: 4
-                  example: 'My name'
                 content:
                   type: string
                   minLength: 1
@@ -310,6 +318,9 @@ paths:
       summary: Retorna llistat de comentaris
       description: Retorna llistat de tots els comentaris. Si indiqueu un valor a un paràmetre, retorna els comentaris associats a aquesta condició. Per exemple, indicant el id d’un post retorna un llistat dels comentaris que pertanyen a aquest.
       operationId: comments_all
+      security:
+        - ApiKeyAuth: []     # use the same name as under securitySchemes
+
       parameters:
         - name: author
           in: query
@@ -335,6 +346,16 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Comment'
+        403:
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error403'
+
         404:
           description: 'Error: Not Found'
           content:
@@ -378,6 +399,66 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/errorComment404'
+
+  /comments/{comment_id}/comment:
+    post:
+      tags:
+      - Comments
+      summary: Afegeix un comentari
+      description: Afegeix un comentari al comentari identificat per comment_id i retorna el comentari que s'ha creat
+      operationId: comment_comment
+      requestBody:
+        description: Provide the author & content of the new Comment
+        content:
+          application/json:
+            schema:
+              required:
+              - author
+              - content
+              type: object
+              properties:
+                author:
+                  type: string
+                  minLength: 4
+                  example: 'My name'
+                content:
+                  type: string
+                  minLength: 1
+                  maxLength: 500
+                  example: 'My content'
+        required: true
+      parameters:
+        - name: comment_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - ApiKeyAuth: []     # use the same name as under securitySchemes
+      responses:
+        201:
+          description: Comment created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        400:
+          description: 'Error: Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error400'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+
 
   /comments/{comment_id}/commentlikes:
     post:
@@ -757,8 +838,3 @@ components:
         status: 404
         error: "Not Found"
         message: "No hay user con ese ID"
-
-
-
-
-
