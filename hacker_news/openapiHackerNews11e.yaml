@@ -5,9 +5,7 @@ info:
   description: "This is the Open API documentation for the REST API of HackerNews. By: Carlos Rasche, Clara Estruch, Tatiana Meyer, Marcel Urpí & Carlos Exojo"
 servers:
   - url: 'https://aswhackernewsg11e.herokuapp.com/'
-  - url: ‘http://3.87.183.13:8080’
-  - url: ‘http://54.152.124.246:8080’
-
+  - url: 'http://54.175.8.134:8080'
 
 paths:
   /posts:
@@ -16,6 +14,22 @@ paths:
       - Posts
       summary: Mostra tots els posts
       operationId: posts_index 
+      parameters:
+        - name: type
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: author
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: upvoted_by
+          in: query
+          required: false
+          schema:
+            type: string
       responses:
         200:
           description: successful operation
@@ -84,6 +98,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
+
+
+
       
   
                   
@@ -170,8 +187,7 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/errorPost404'
-
-  /posts/{id_post}/likes/{user_id}:
+  /posts/{id_post}/likes/{id_like}:
     delete:
       tags:
       - Posts
@@ -184,7 +200,7 @@ paths:
           required: true
           schema:
             type: integer
-        - name: user_id
+        - name: id_like
           in: path
           required: true
           schema:
@@ -225,6 +241,7 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error403'
+
 
   /posts/{id_post}/comments:
     post:
@@ -291,60 +308,24 @@ paths:
       tags: 
       - Comments
       summary: Retorna llistat de comentaris
-      description: Retorna llistat de tots els comentaris
+      description: Retorna llistat de tots els comentaris. Si indiqueu un valor a un paràmetre, retorna els comentaris associats a aquesta condició. Per exemple, indicant el id d’un post retorna un llistat dels comentaris que pertanyen a aquest.
       operationId: comments_all
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Comment'
-                  
-  /comments/{author}:
-    get:
-      tags: 
-      - Comments
-      summary: Retorna llistat de comentaris
-      description: Retorna llistat de comentaris segons l'autor identificat per {author}
-      operationId: comments_by_author
       parameters:
         - name: author
-          in: path
-          required: true
+          in: query
+          required: false
           schema:
             type: string
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Comment'
-        404:
-          description: 'Error: Not Found'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-    
-  /comments/{upvoted_by}:
-    get:
-      tags: 
-      - Comments
-      summary: Retorna llistat de comentaris
-      description: Retorna llistat de comentaris votats per {upvoted_by}
-      operationId: comments_by_upvoted
-      parameters:
         - name: upvoted_by
-          in: path
-          required: true
+          in: query
+          required: false
           schema:
             type: string
+        - name: id_post
+          in: query
+          required: false
+          schema:
+            type: integer
       responses:
         200:
           description: successful operation
@@ -360,6 +341,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/errorComment404'
 
   /comments/{comment_id}:
     get:
@@ -445,7 +429,7 @@ paths:
                 errorExample:
                   $ref: '#/components/examples/errorComment404'
 
-  /comments/{comment_id}/commentlikes/{user_id}:
+  /comments/{comment_id}/commentlikes/{commentlike_id}:
     delete:
       tags:
       - Comments
@@ -458,7 +442,7 @@ paths:
           required: true
           schema:
             type: integer
-        - name: user_id
+        - name: commentlike_id
           in: path
           required: true
           schema:
@@ -466,10 +450,12 @@ paths:
       security:
         - ApiKeyAuth: []     # use the same name as under securitySchemes
       responses:
-        204:
-          description: CommentLike eliminado
+        200:
+          description: Se ha eliminado el CommentLike
           content:
-            application/json: {}
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
         404:
           description: 'Error: Not Found'
           content:
@@ -499,6 +485,89 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error403'
+  /usuaris:
+    get:
+      tags: 
+      - Usuaris
+      summary: Retorna usuaris
+      description: Retorna llistat de tots els usuaris.Si indiques l'id retorna la info de l'usuari identificat per l'id.
+      operationId: users_all
+      parameters:
+        - name: usuari_id
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+    post: 
+      tags:
+      - Usuaris
+      summary: Edita un usuari
+      operationId: usuari_edit
+      security:
+        - ApiKeyAuth: []     # use the same name as under securitySchemes
+      requestBody:
+        description: Provide the user id, email and about.
+        content:
+          application/json:
+            schema:
+              required:
+              - id
+              - email
+              - about
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 4
+                email:
+                  type: string
+                  minLength: 1
+                  maxLength: 20
+                  example: 'My email'
+                about:
+                  type: string
+                  minLength: 1
+                  example: 'My about'
+        required: true
+      responses:
+        200:
+          description: User edited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: 'Error: Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error400'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+
+
 
 
                   
@@ -617,9 +686,16 @@ components:
     User:
       type: object
       properties:
+        id:
+          type: integer
+          example: 4
         name:
           type: string
           example: 'Joan Dausà'
+        about:
+          type: string
+          format: email
+          example: 'Sobre mí'
         email:
           type: string
           format: email
@@ -627,6 +703,15 @@ components:
         google_id:
           type: string
           example:
+        created_at:
+          type: string
+          format: date-time
+          example: '2011-06-11T21:20:44+09:00'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2011-06-11T21:23:44+09:00'
+
         
     ErrorResult:
       type: object
@@ -672,3 +757,8 @@ components:
         status: 404
         error: "Not Found"
         message: "No hay user con ese ID"
+
+
+
+
+
