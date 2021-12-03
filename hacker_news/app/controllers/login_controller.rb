@@ -20,6 +20,7 @@ class LoginController < ApplicationController
           format.html
           format.json { head :bad_request }
           end
+          return
         end
     end
     respond_to do |format|
@@ -29,7 +30,33 @@ class LoginController < ApplicationController
   end
   
   def update
-    User.update(about: params[:about])
+    if !params[:id].nil?
+      @usuari = User.where(id: params[:id])
+      if !@usuari.nil?  #si el usuari existe se updatea
+        if !params[:about].nil?
+          @usuari.update(about: params[:about])
+        end
+        if !params[:email].nil?
+          @usuari.update(email: params[:email])
+        end
+      else  #si no existe devuelve bad request
+         respond_to do |format|
+          format.html
+          format.json { head :bad_request}
+        end
+        return
+      end
+      respond_to do |format|
+          format.html
+          format.json {render json: @usuari, head: 201}
+        end
+      
+    else  #si el id no es valido
+      respond_to do |format|
+          format.html
+          format.json { head :bad_request}
+        end
+    end
   end
   
   def create
