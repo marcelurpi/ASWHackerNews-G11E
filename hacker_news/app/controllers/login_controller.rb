@@ -14,6 +14,7 @@ class LoginController < ApplicationController
     @usuaris = User.all
     if !params[:usuari_id].nil? && params[:usuari_id]
       p 'primer if'
+      if cookies.signed[:user_id] == params[:usuari_id] #si el user auth pide sus datos
         @usuaris = User.where(id: params[:usuari_id] )
         if @usuaris.nil?  #si el usuario es null
           respond_to do |format|
@@ -22,6 +23,22 @@ class LoginController < ApplicationController
           end
           return
         end
+      else    #si no es auth no se devuelve el mail
+        @usuaris = User.where(id: params[:usuari_id] )
+        if @usuaris.nil?  #si el usuario es null
+          respond_to do |format|
+          format.html
+          format.json { head :bad_request }
+          end
+          return
+        else
+          respond_to do |format|
+          format.html
+          format.json { render json: @usuaris.name }
+          end
+          return
+        end
+      end
     end
     respond_to do |format|
           format.html
@@ -32,7 +49,7 @@ class LoginController < ApplicationController
   def update
     if !params[:id].nil?
       @usuari = User.where(id: params[:id])
-      if !@usuari.nil?  #si el usuari existe se updatea
+      if !@usuari.nil?  && @usuari == Usuaris.find_by(user_id: cookies.signed[:user_id])#si el usuari existe se updatea
         if !params[:about].nil?
           @usuari.update(about: params[:about])
         end
@@ -40,7 +57,7 @@ class LoginController < ApplicationController
           @usuari.update(email: params[:email])
         end
       else  #si no existe devuelve bad request
-         respond_to do |format|
+        respond_to do |format|
           format.html
           format.json { head :bad_request}
         end
@@ -49,7 +66,7 @@ class LoginController < ApplicationController
       respond_to do |format|
           format.html
           format.json {render json: @usuari, head: 201}
-        end
+      end
       
     else  #si el id no es valido
       respond_to do |format|
