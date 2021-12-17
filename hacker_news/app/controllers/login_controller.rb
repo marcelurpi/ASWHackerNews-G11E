@@ -4,10 +4,83 @@ class LoginController < ApplicationController
   
   def profile
     @user = User.find_by(name: params[:name])
+    key   = ActiveSupport::KeyGenerator.new(ENV['SECRET_KEY']).generate_key(ENV['ENCRYPTION_SALT'], ActiveSupport::MessageEncryptor.key_len)
+    crypt = ActiveSupport::MessageEncryptor.new(key)
+    @api_key = crypt.encrypt_and_sign(@user.id)
+  end
+  
+  def usuaris
+    p 'entra'
+    @usuaris = User.all
+    if !params[:usuari_id].nil? #si no es null
+      p 'primer if'
+      if User.find(cookies.signed[:user_id]).id == params[:usuari_id] #si el user auth pide sus datos
+        p 'its me madafaka'
+        @usuaris = User.find(params[:usuari_id])  #comprueba si el usuario existe
+        if @usuaris.nil?  #si el usuario es null
+          respond_to do |format|
+          format.html
+          format.json { head :bad_request }
+          end
+          return
+        else            #si existe (lo pide el auth y es el mismo)    
+          respond_to do |format|
+          format.html
+          format.json { render json: @usuaris }
+          end
+          return
+        end
+      
+      else                                              #si no es auth no se devuelve el mail
+        @usuari = User.find(params[:usuari_id] )
+        if @usuari.nil?  #si el usuario es null
+          respond_to do |format|
+          format.html
+          format.json { head :bad_request }
+          end
+          return
+        else
+          @nusuari = { :id => @usuari.id, :name => @usuari.name, :email => null, :created_at => @usuari.created_at, :updated_at => @usuari.updated_at, :about => @usuari.about}
+          @json = @nusuari.to_json
+          
+          respond_to do |format|
+          format.html
+          format.json { render json: @json }
+          end
+          return
+        end
+      end
+    end
   end
   
   def update
-    User.update(about: params[:about])
+    if !params[:id].nil?
+      @usuari = User.where(id: params[:id])
+      if !@usuari.nil?  && @usuari == Usuaris.find_by(user_id: cookies.signed[:user_id])#si el usuari existe se updatea
+        if !params[:about].nil?
+          @usuari.update(about: params[:about])
+        end
+        if !params[:email].nil?
+          @usuari.update(email: params[:email])
+        end
+      else  #si no existe devuelve bad request
+        respond_to do |format|
+          format.html
+          format.json { head :bad_request}
+        end
+        return
+      end
+      respond_to do |format|
+          format.html
+          format.json {render json: @usuari, head: 201}
+      end
+      
+    else  #si el id no es valido
+      respond_to do |format|
+          format.html
+          format.json { head :bad_request}
+        end
+    end
   end
   
   def create
