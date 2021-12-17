@@ -12,27 +12,51 @@ class LoginController < ApplicationController
   def usuaris
     p 'entra'
     @usuaris = User.all
-    if !params[:usuari_id].nil? && params[:usuari_id]
+    if !params[:usuari_id].nil? #si no es null
       p 'primer if'
-        @usuaris = User.where(id: params[:usuari_id] )
+      if User.find(cookies.signed[:user_id]).id == params[:usuari_id] #si el user auth pide sus datos
+        p 'its me madafaka'
+        @usuaris = User.find(params[:usuari_id])  #comprueba si el usuario existe
         if @usuaris.nil?  #si el usuario es null
           respond_to do |format|
           format.html
           format.json { head :bad_request }
           end
           return
-        end
-    end
-    respond_to do |format|
+        else            #si existe (lo pide el auth y es el mismo)    
+          respond_to do |format|
           format.html
           format.json { render json: @usuaris }
+          end
+          return
+        end
+      
+      else                                              #si no es auth no se devuelve el mail
+        @usuari = User.find(params[:usuari_id] )
+        if @usuari.nil?  #si el usuario es null
+          respond_to do |format|
+          format.html
+          format.json { head :bad_request }
+          end
+          return
+        else
+          @nusuari = { :id => @usuari.id, :name => @usuari.name, :email => null, :created_at => @usuari.created_at, :updated_at => @usuari.updated_at, :about => @usuari.about}
+          @json = @nusuari.to_json
+          
+          respond_to do |format|
+          format.html
+          format.json { render json: @json }
+          end
+          return
+        end
+      end
     end
   end
   
   def update
     if !params[:id].nil?
-      @usuari = User.where(id: params[:id])
-      if !@usuari.nil?  #si el usuari existe se updatea
+      @usuari = User.find(params[:id])
+      if !@usuari.nil?  && @usuari == User.find(cookies.signed[:user_id])#si el usuari existe se updatea
         if !params[:about].nil?
           @usuari.update(about: params[:about])
         end
@@ -40,7 +64,7 @@ class LoginController < ApplicationController
           @usuari.update(email: params[:email])
         end
       else  #si no existe devuelve bad request
-         respond_to do |format|
+        respond_to do |format|
           format.html
           format.json { head :bad_request}
         end
@@ -49,7 +73,7 @@ class LoginController < ApplicationController
       respond_to do |format|
           format.html
           format.json {render json: @usuari, head: 201}
-        end
+      end
       
     else  #si el id no es valido
       respond_to do |format|
