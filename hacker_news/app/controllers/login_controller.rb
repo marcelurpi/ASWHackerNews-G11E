@@ -55,8 +55,8 @@ class LoginController < ApplicationController
   
   def update
     if !params[:id].nil?
-      @usuari = User.where(id: params[:id])
-      if !@usuari.nil?  && @usuari == Usuaris.find_by(user_id: cookies.signed[:user_id])#si el usuari existe se updatea
+      @usuari = User.find(params[:id])
+      if !@usuari.nil?  && @usuari == User.find(cookies.signed[:user_id])#si el usuari existe se updatea
         if !params[:about].nil?
           @usuari.update(about: params[:about])
         end
