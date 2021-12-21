@@ -66,6 +66,23 @@ class CommentsController < ApplicationController
           format.json { render json: @comments}
         end
       end
+    elsif !params[:id_parent_comment].nil?
+      @pcomment = Comment.find(params[:id_parent_comment])
+      if @pcomment.nil?
+        p 'es nul'
+        respond_to do |format|
+          format.html
+          format.json { head :bad_request }
+        end
+        return
+      else
+        @comments = Comment.where(commentable_type: 'Comment', commentable_id: params[:id_parent_comment])
+        p 'no es null'
+        respond_to do |format|
+          format.html
+          format.json { render json: @comments}
+        end
+      end
     end
   end
 
