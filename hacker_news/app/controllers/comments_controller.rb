@@ -42,7 +42,24 @@ class CommentsController < ApplicationController
         end
         return
       else
-        @comments = Comment.where(post_id: params[:id_post])
+        @comments = Comment.where(commentable_type: 'Post', commentable_id: params[:id_post])
+        p 'no es null'
+        respond_to do |format|
+          format.html
+          format.json { render json: @comments}
+        end
+      end
+    elsif !params[:id_parent_post].nil?
+      @poste = Post.where(id_post: params[:id_parent_post])
+      if @poste.nil?
+        p 'es nul'
+        respond_to do |format|
+          format.html
+          format.json { head :bad_request }
+        end
+        return
+      else
+        @comments = Comment.where(post_id: params[:id_parent_post])
         p 'no es null'
         respond_to do |format|
           format.html
