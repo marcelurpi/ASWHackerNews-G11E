@@ -15,7 +15,7 @@ class LoginController < ApplicationController
       crypt = ActiveSupport::MessageEncryptor.new(key)
       author_id = crypt.decrypt_and_verify(params['X-API-KEY'])
       usuaris_json = @usuaris.as_json
-      usuaris_json.map{ |usuari| usuari[:auth] = author_id == usuari['id']; p usuari; p author_id; usuari }
+      usuaris_json.map{ |usuari| usuari[:auth] = author_id == usuari['id']; usuari }
       if !params[:usuari_id].nil? && params[:usuari_id]
         if @usuaris.nil?  #si el usuario es null
           respond_to do |format|

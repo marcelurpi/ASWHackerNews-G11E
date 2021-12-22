@@ -31,10 +31,17 @@ class PostsController < ApplicationController
     else
       @posts = Post.all.sort { |a, b| -a.points <=> -b.points }
     end
-    respond_to do |format|
-          format.html
-          format.json { render json }
-        end
+    if request.format.json?
+      posts_json = @posts.as_json
+      key   = ActiveSupport::KeyGenerator.new(ENV['SECRET_KEY']).generate_key(ENV['ENCRYPTION_SALT'], ActiveSupport::MessageEncryptor.key_len)
+      crypt = ActiveSupport::MessageEncryptor.new(key)
+      auth_user_id = crypt.decrypt_and_verify(params['X-API-KEY'])
+      posts_json.map{ |postp| postp[:voted_by_auth] = Like.where(post_id: postp['id'], user_id: auth_user_id).count != 0; postp }
+      respond_to do |format|
+        format.html
+        format.json { render json: posts_json }
+      end
+    end
   end
   
   def ask
@@ -45,6 +52,17 @@ class PostsController < ApplicationController
   def show
     @comments = Comment.all
     @users = User.all
+    if request.format.json?
+      post_json = @post.as_json
+      key   = ActiveSupport::KeyGenerator.new(ENV['SECRET_KEY']).generate_key(ENV['ENCRYPTION_SALT'], ActiveSupport::MessageEncryptor.key_len)
+      crypt = ActiveSupport::MessageEncryptor.new(key)
+      auth_user_id = crypt.decrypt_and_verify(params['X-API-KEY'])
+      post_json[:voted_by_auth] = Like.where(post_id: post_json['id'], user_id: auth_user_id).count != 0
+      respond_to do |format|
+        format.html
+        format.json { render json: post_json }
+      end
+    end
   end
 
   # GET /posts/new

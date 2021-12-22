@@ -43,11 +43,6 @@ class CommentsController < ApplicationController
         return
       else
         @comments = Comment.where(commentable_type: 'Post', commentable_id: params[:id_post])
-        p 'no es null'
-        respond_to do |format|
-          format.html
-          format.json { render json: @comments}
-        end
       end
     elsif !params[:id_parent_post].nil?
       @poste = Post.where(id_post: params[:id_parent_post])
@@ -60,11 +55,6 @@ class CommentsController < ApplicationController
         return
       else
         @comments = Comment.where(post_id: params[:id_parent_post])
-        p 'no es null'
-        respond_to do |format|
-          format.html
-          format.json { render json: @comments}
-        end
       end
     elsif !params[:id_parent_comment].nil?
       @pcomment = Comment.find(params[:id_parent_comment])
@@ -77,11 +67,17 @@ class CommentsController < ApplicationController
         return
       else
         @comments = Comment.where(commentable_type: 'Comment', commentable_id: params[:id_parent_comment])
-        p 'no es null'
-        respond_to do |format|
-          format.html
-          format.json { render json: @comments}
-        end
+      end
+    end
+    if request.format.json?
+      comments_json = @comments.as_json 
+      key   = ActiveSupport::KeyGenerator.new(ENV['SECRET_KEY']).generate_key(ENV['ENCRYPTION_SALT'], ActiveSupport::MessageEncryptor.key_len)
+      crypt = ActiveSupport::MessageEncryptor.new(key)
+      auth_user_id = crypt.decrypt_and_verify(params['X-API-KEY'])
+      comments_json.map{ |comment| comment[:voted_by_auth] = Commentlike.where(comment_id: comment['id'], user_id: auth_user_id).count != 0; comment }
+      respond_to do |format|
+        format.html
+        format.json { render json: comments_json }
       end
     end
   end
@@ -89,6 +85,17 @@ class CommentsController < ApplicationController
   # GET /comments/1
   # GET /comments/1.json
   def show
+    if request.format.json?
+      comment_json = @comment.as_json 
+      key   = ActiveSupport::KeyGenerator.new(ENV['SECRET_KEY']).generate_key(ENV['ENCRYPTION_SALT'], ActiveSupport::MessageEncryptor.key_len)
+      crypt = ActiveSupport::MessageEncryptor.new(key)
+      auth_user_id = crypt.decrypt_and_verify(params['X-API-KEY'])
+      comment_json[:voted_by_auth] = Commentlike.where(comment_id: comment_json['id'], user_id: auth_user_id).count != 0
+      respond_to do |format|
+        format.html
+        format.json { render json: comment_json }
+      end
+    end
   end
 
   # GET /comments/new
