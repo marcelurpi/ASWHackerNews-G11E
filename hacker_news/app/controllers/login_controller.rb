@@ -10,11 +10,13 @@ class LoginController < ApplicationController
   end
   
   def usuaris
-    p 'entra'
     @usuaris = User.all
-    if !params[:usuari_id].nil? && params[:usuari_id]
-      p 'primer if'
-        @usuaris = User.where(id: params[:usuari_id] )
+    key   = ActiveSupport::KeyGenerator.new(ENV['SECRET_KEY']).generate_key(ENV['ENCRYPTION_SALT'], ActiveSupport::MessageEncryptor.key_len)
+      crypt = ActiveSupport::MessageEncryptor.new(key)
+      author_id = crypt.decrypt_and_verify(params['X-API-KEY'])
+      usuaris_json = @usuaris.as_json
+      usuaris_json.map{ |usuari| usuari[:auth] = author_id == usuari['id']; p usuari; p author_id; usuari }
+      if !params[:usuari_id].nil? && params[:usuari_id]
         if @usuaris.nil?  #si el usuario es null
           respond_to do |format|
           format.html
@@ -23,9 +25,10 @@ class LoginController < ApplicationController
           return
         end
     end
+    p @usuaris
     respond_to do |format|
           format.html
-          format.json { render json: @usuaris }
+          format.json { render json: usuaris_json }
     end
   end
   

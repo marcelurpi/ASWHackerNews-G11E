@@ -31,6 +31,10 @@ class PostsController < ApplicationController
     else
       @posts = Post.all.sort { |a, b| -a.points <=> -b.points }
     end
+    respond_to do |format|
+          format.html
+          format.json { render json }
+        end
   end
   
   def ask
